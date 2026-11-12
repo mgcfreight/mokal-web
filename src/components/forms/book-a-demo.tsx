@@ -46,10 +46,10 @@ export default function BookADemoForm() {
     toast.success("Submitted Successfully");
     reset();
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/book-a-demo", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/book-a-demo", data),
+    onError, onSuccess,
+  });
 
   function bookDemo(values: FieldValues) {
     const data = {

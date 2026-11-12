@@ -30,10 +30,10 @@ export default function GrowBusinessForm() {
     toast.success("Submitted Successfully");
     reset();
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/grow-business", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/grow-business", data),
+    onError, onSuccess,
+  });
 
   function growBusiness(values: FieldValues) {
     mutate(values);

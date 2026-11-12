@@ -20,11 +20,13 @@ export default function CareerOppurtunities() {
   const search = watch("search");
 
   const limit = watch("limit");
-  const { data } = useQuery(["jobs", search, limit, page], ({ queryKey }) =>
-    axios.get(
-      `/api/jobs?job=${queryKey[1]}&limit=${queryKey[2]}&page=${queryKey[3]}`
-    )
-  );
+  const { data } = useQuery({
+    queryKey: ["jobs", search, limit, page],
+    queryFn: ({ queryKey }) =>
+      axios.get(
+        `/api/jobs?job=${queryKey[1]}&limit=${queryKey[2]}&page=${queryKey[3]}`
+      ),
+  });
 
   useEffect(() => {
     setValue("limit", 4);

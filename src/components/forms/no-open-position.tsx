@@ -30,10 +30,10 @@ export default function NoOpenPositionForm() {
     toast.success("Submitted Successfully");
     reset();
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.postForm("/platform/job-position", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.postForm("/platform/job-position", data),
+    onError, onSuccess,
+  });
 
   function positionSubmit(values: FieldValues) {
     const {

@@ -9,7 +9,8 @@ import { FtlFormContext } from "../ftl-form";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
-import { Country, FTLPackageType } from "@/utils/types";
+import { FTLPackageType } from "@/utils/types";
+import { toAddressPayload } from "@/utils/postal-lookup";
 
 export default function Details() {
   const { setActiveState } = useContext(FtlFormContext);
@@ -31,10 +32,10 @@ export default function Details() {
   function onSuccess() {
     setActiveState((prev) => prev + 1);
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/quote-request/ftl", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/quote-request/ftl", data),
+    onError, onSuccess,
+  });
   function submit(values: FieldValues) {
     console.log("neww", values);
     const { reefer, flatbed, container } = values;
@@ -48,20 +49,8 @@ export default function Details() {
     const items = values.items.map((e: any) => ({ ...e }));
     const data = {
       ...values,
-      shippingFrom: {
-        ...values.shippingFrom,
-        country:
-          values.shippingFrom.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
-      shippingTo: {
-        ...values.shippingTo,
-        country:
-          values.shippingTo.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
+      shippingFrom: toAddressPayload(values.shippingFrom),
+      shippingTo: toAddressPayload(values.shippingTo),
       packageType,
       items,
     };

@@ -5,7 +5,8 @@ import { LtlFormContext } from "./ltl-form";
 import { FieldValues, useFormContext } from "react-hook-form";
 import BaseInput from "@/components/common/forms/base-input";
 import BaseButton from "@/components/common/base-button";
-import { Country, PackageType } from "@/utils/types";
+import { PackageType } from "@/utils/types";
+import { toAddressPayload } from "@/utils/postal-lookup";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
@@ -29,10 +30,10 @@ export default function Details() {
   function onSuccess() {
     setActiveState((prev) => prev + 1);
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/quote-request/ltl", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/quote-request/ltl", data),
+    onError, onSuccess,
+  });
   function submit(values: FieldValues) {
     // console.log("neww", values);
     const { pallet, courier, package: packagee } = values;
@@ -46,20 +47,8 @@ export default function Details() {
     const items = values.items.map((e: any) => ({ ...e, packageType }));
     const data = {
       ...values,
-      shippingFrom: {
-        ...values.shippingFrom,
-        country:
-          values.shippingFrom.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
-      shippingTo: {
-        ...values.shippingTo,
-        country:
-          values.shippingTo.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
+      shippingFrom: toAddressPayload(values.shippingFrom),
+      shippingTo: toAddressPayload(values.shippingTo),
       packageType,
       items,
     };

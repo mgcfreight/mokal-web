@@ -10,12 +10,13 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import SanityClient from "next-sanity-client";
+import { localize } from "./localize";
 
 export const countries = ["Canada", "USA", "Mexico"];
 
 export const phoneNumber = "+1 (289) 295-1640";
 
-export const mokalLink = "https://mokal.vercel.app/login";
+export const mokalLink = "https://platform.mgcfreight.com/login";
 
 export const navbarMenuSettings: NavbarMenuSetting[] = [
   {
@@ -802,3 +803,8 @@ export const client = new SanityClient({
   dataset: process.env.SANITY_STUDIO_DATASET!,
   useCdn: process.env.SANITY_STUDIO_DATASET == "staging",
 });
+
+// Unwrap localized Sanity fields (`{ en: "..." }`) for every query.
+const rawFetch = client.fetch.bind(client);
+client.fetch = (async (...args: Parameters<typeof rawFetch>) =>
+  localize(await rawFetch(...args))) as typeof client.fetch;

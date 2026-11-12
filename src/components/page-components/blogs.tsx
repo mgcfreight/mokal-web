@@ -15,9 +15,11 @@ export default function BlogsClient({ data }: { data: Blogs }) {
   const { control, watch } = useForm();
   const router = useRouter();
   const search = watch("search");
-  const blogQuery = useQuery(["blogs", search], ({ queryKey }) =>
-    axios.get(`/api/blog?searchQuery=${queryKey[1]}`)
-  );
+  const blogQuery = useQuery({
+    queryKey: ["blogs", search],
+    queryFn: ({ queryKey }) =>
+      axios.get(`/api/blog?searchQuery=${queryKey[1]}`),
+  });
   return (
     <>
       <div className="flex flex-col gap-4">

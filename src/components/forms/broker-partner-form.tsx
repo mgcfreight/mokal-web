@@ -31,10 +31,10 @@ export default function BrokerPartnerForm() {
     toast.success("Submitted Successfully");
     reset();
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/broker-partner", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/broker-partner", data),
+    onError, onSuccess,
+  });
 
   function brokerPartner(values: FieldValues) {
     mutate(values);
