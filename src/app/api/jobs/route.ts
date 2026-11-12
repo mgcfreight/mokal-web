@@ -1,4 +1,5 @@
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
+import { DEFAULT_LOCALE } from "@/utils/localize";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -7,7 +8,7 @@ export async function GET(req: NextRequest) {
             
                "publishedAt":_createdAt}`;
 
-  const jobsAll: any = await client.fetch({
+  const jobsAll: any = await fetchLocalized({
     query: queryAll,
     config: {
       cache: "no-store",
@@ -23,12 +24,12 @@ export async function GET(req: NextRequest) {
   const skipStart = (page - 1) * limit;
   const skipEnd = (page + 1) * limit;
 
-  const query = ` *[_type == 'job'][${skipStart}..${limit==1?skipStart:skipEnd}][name match '${job}*']{
+  const query = ` *[_type == 'job'][${skipStart}..${limit==1?skipStart:skipEnd}][name.${DEFAULT_LOCALE} match '${job}*']{
         ...,
             
                "publishedAt":_createdAt}`;
 
-  const blogsData = await client.fetch({
+  const blogsData = await fetchLocalized({
     query,
     config: {
       cache: "no-store",

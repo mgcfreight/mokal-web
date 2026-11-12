@@ -14,6 +14,8 @@ import {
   INVALID_POSTAL_MESSAGE,
   LOOKUP_FAILED_MESSAGE,
   PostalLocation,
+  UNSUPPORTED_COUNTRY_MESSAGE,
+  isSupportedLocation,
   lookupPostalCode,
   normalizePostalCode,
 } from "@/utils/postal-lookup";
@@ -94,12 +96,16 @@ export default function Package() {
       try {
         loc = await lookupPostalCode(value);
       } catch {
-        if (isCurrent()) fillLocation(prefix, null);
+        if (!isCurrent()) return true;
+        fillLocation(prefix, null);
         return LOOKUP_FAILED_MESSAGE;
       }
-      // A slower response for an older value must not overwrite the fields.
-      if (isCurrent()) fillLocation(prefix, loc);
-      return !!loc || INVALID_POSTAL_MESSAGE;
+      // A slower response for an older value must not overwrite the fields
+      // or set an error: the run for the current value decides that.
+      if (!isCurrent()) return true;
+      fillLocation(prefix, loc);
+      if (!loc) return INVALID_POSTAL_MESSAGE;
+      return isSupportedLocation(loc) || UNSUPPORTED_COUNTRY_MESSAGE;
     };
   }
 

@@ -31,7 +31,7 @@ export default async function CardsContent({
   description,
   buttons,
 }: CardsProps) {
-  //     const reasonsToChooseUss: HeaderAndCards = reasonsToChooseUs?? await client.fetch({
+  //     const reasonsToChooseUss: HeaderAndCards = reasonsToChooseUs?? await fetchLocalized({
   //         query: `*[_type=='cards' && name=='Reasons To Choose Us'][0]{
   //   ...,
   //   "header":[...header[]{

@@ -3,7 +3,7 @@ import BaseSlider from "../common/base-slider";
 import LinearGradientText from "../common/linear-gradient-text";
 import BlogPost from "../common/blog-post";
 import { HearFromUsAndBlogsProps } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 
 
 
@@ -35,7 +35,7 @@ export const responsiveWhoWeAre = {
 
 export default async function HearFromUsAndBlogs({ hideBlogs, hideHearFromUs, bgHearFromUs = "bg-white", bgBlogs = "bg-white" }: HearFromUsAndBlogsProps) {
 
-    const fetchData: any = await client.fetch({
+    const fetchData: any = await fetchLocalized({
         query: `*[_type=='blogComponent'][0]{
       ...  ,
       "blogs":[...blogs[]->{
@@ -46,7 +46,7 @@ export default async function HearFromUsAndBlogs({ hideBlogs, hideHearFromUs, bg
                 `
     })
 
-    const fetchData2: any = await client.fetch({
+    const fetchData2: any = await fetchLocalized({
         query: `*[_type=='testimonialComponent'][0]{
       ...,
       "testimonials":[...testimonials[]->{

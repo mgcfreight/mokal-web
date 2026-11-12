@@ -1,13 +1,13 @@
 
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import BaseVideo from "@/components/common/base-video";
 
 
 export default async function VideoLibrary() {
 
-    const homeData: { content: [PagesContent], remaining: any } = await client.fetch({
+    const homeData: { content: [PagesContent], remaining: any } = await fetchLocalized({
         query: `*[_type=='video-page'][0]{
   "content":[...contentBlocks[]->{
     ...,

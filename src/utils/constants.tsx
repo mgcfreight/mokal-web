@@ -804,7 +804,16 @@ export const client = new SanityClient({
   useCdn: process.env.SANITY_STUDIO_DATASET == "staging",
 });
 
-// Unwrap localized Sanity fields (`{ en: "..." }`) for every query.
-const rawFetch = client.fetch.bind(client);
-client.fetch = (async (...args: Parameters<typeof rawFetch>) =>
-  localize(await rawFetch(...args))) as typeof client.fetch;
+/**
+ * `client.fetch` that unwraps localized Sanity fields (`{ en: "..." }`) in the
+ * result. Use this for every content query.
+ *
+ * It only touches the result: a query that filters on or traverses a localized
+ * field must address the locale itself, e.g. `title.en match ...` or
+ * `contents.en[]` (see DEFAULT_LOCALE in ./localize).
+ */
+export async function fetchLocalized<T = any>(
+  ...args: Parameters<typeof client.fetch>
+): Promise<T> {
+  return localize<T>(await client.fetch(...args));
+}

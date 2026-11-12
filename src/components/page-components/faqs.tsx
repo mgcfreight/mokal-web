@@ -4,7 +4,7 @@ import AccordionFaqs from "./accordion.faq";
 
 export default async function FAQSs({header,description,questions}:FAQS) {
 
-//     const faqsData: FAQS =data??  await client.fetch(
+//     const faqsData: FAQS =data??  await fetchLocalized(
 //         {
 //             query: `*[_type == 'faqs'][0]{
 //   // ...,

@@ -1,4 +1,4 @@
-import { client, links } from "@/utils/constants";
+import { fetchLocalized, links } from "@/utils/constants";
 import { Navbar, NavbarContent } from "@heroui/navbar";
 import { IoIosCall } from "react-icons/io";
 import CheckStatusForm from "../forms/check-status";
@@ -8,7 +8,7 @@ import { configData } from "@/utils/types";
 import Marquee from "react-fast-marquee";
 
 export default async function MainNavbar() {
-  const configData: configData = await client.fetch({
+  const configData: configData = await fetchLocalized({
     query: `*[_type == 'config'][0]{
         ...,
         "imageUrl": logo.asset->url,

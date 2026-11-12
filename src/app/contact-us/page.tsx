@@ -17,13 +17,13 @@ import TabPageComponent from "@/components/page-components/tab";
 import Testimonials from "@/components/page-components/testimonials";
 import Title from "@/components/page-components/title";
 import TrackShipment from "@/components/page-components/track-shipment";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import { PagesContent } from "@/utils/types";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function ContactUs() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='contact'][0]{
                                                           "content":[...contentBlocks[]->{
 

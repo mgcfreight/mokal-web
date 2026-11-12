@@ -1,7 +1,7 @@
 import Image from "next/image";
 import BaseSlider from "../common/base-slider";
 import LinearGradientText from "../common/linear-gradient-text";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 
 interface BlogProps {
   header: [{ Value: string; Highlight: boolean }];
@@ -37,7 +37,7 @@ export default async function MainBlog({
   header: headerr,
   blogs: blogss,
 }: BlogProps) {
-  const fetchData: any = await client.fetch({
+  const fetchData: any = await fetchLocalized({
     query: `*[_type=='blogComponent'][0]{
   ...  
 }

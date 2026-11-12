@@ -19,7 +19,7 @@ import Content from "@/components/page-components/content";
 import TabPageComponent from "@/components/page-components/tab";
 import Title from "@/components/page-components/title";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import SingleSlider from "@/components/page-components/single-slider";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
@@ -31,7 +31,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function SpotQuote() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='spot-quote'][0]{
                                                           "content":[...contentBlocks[]->{
 

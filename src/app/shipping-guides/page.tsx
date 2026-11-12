@@ -1,4 +1,4 @@
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import GuideToBook from "@/components/page-components/guide-to-book";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
@@ -24,7 +24,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function ShippingGuides() {
 
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='shipping-guides'][0]{
                                                           "content":[...contentBlocks[]->{
 

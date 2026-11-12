@@ -7,7 +7,7 @@
 // import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 // import Link from "next/link";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -32,7 +32,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 // import CustomerBase from "@/components/page-components/customer-base";
 
 export default async function InternationalShipping() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='international-shipping'][0]{
                                                           "content":[...contentBlocks[]->{
 

@@ -9,7 +9,7 @@ import CardsContent from "@/components/page-components/cards-content";
 import MainBlog from "@/components/page-components/main-blog";
 import Testimonials from "@/components/page-components/testimonials";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import Content2 from "@/components/page-components/content2";
 import GrowYourBusiness from "@/components/page-components/grow-your-business";
 import SingleSlider from "@/components/page-components/single-slider";
@@ -23,7 +23,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function LTL() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='LTL'][0]{
                                                           "content":[...contentBlocks[]->{
 

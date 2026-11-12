@@ -12,7 +12,7 @@ import GuideToBook from "@/components/page-components/guide-to-book";
 import GrowYourBusiness from "@/components/page-components/grow-your-business";
 import SingleSlider from "@/components/page-components/single-slider";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
 import BookADemoForm from "@/components/forms/book-a-demo";
@@ -23,7 +23,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 
 export default async function CarrierPartners() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='carrier-partner'][0]{
                                                           "content":[...contentBlocks[]->{
 

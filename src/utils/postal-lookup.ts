@@ -11,6 +11,8 @@ export type PostalLocation = {
 };
 
 export const INVALID_POSTAL_MESSAGE = "Invalid Postal Code";
+export const UNSUPPORTED_COUNTRY_MESSAGE =
+  "We can only quote shipments within the US and Canada.";
 export const LOOKUP_FAILED_MESSAGE =
   "Couldn't verify postal code. Please try again.";
 
@@ -50,15 +52,25 @@ export function lookupPostalCode(raw: unknown): Promise<PostalLocation | null> {
       })
       .catch((error) => {
         const status = axios.isAxiosError(error) ? error.response?.status : 0;
-        // A 4xx means the API rejected the code itself: that's a definite "invalid".
-        if (status && status >= 400 && status < 500) return null;
-        // Don't cache network/server failures, so the user can retry.
+        // Only 400/404 mean the API rejected the code itself: a definite "invalid".
+        if (status === 400 || status === 404) return null;
+        // Anything else (429, 401/403, 5xx, network) says nothing about the
+        // code: don't cache it, so the user can retry.
         cache.delete(postal);
         throw error;
       });
     cache.set(postal, request);
   }
   return cache.get(postal)!;
+}
+
+/**
+ * The quote API only accepts US and CA (`@IsEnum(Country)` in mokal-backend).
+ * Codes from anywhere else (e.g. Mexico) must be rejected before submitting,
+ * or the payload would go out without a country.
+ */
+export function isSupportedLocation(loc: PostalLocation): boolean {
+  return toCountry(loc) !== undefined;
 }
 
 function toCountry(address: any): Country | undefined {
@@ -71,7 +83,9 @@ function toCountry(address: any): Country | undefined {
 
 /** Shape a shippingFrom/shippingTo form value for the quote-request API. */
 export function toAddressPayload(address: any) {
-  const { countryCode, ...rest } = address ?? {};
+  // countryCode is form-only: the API takes `country` as the code.
+  const rest = { ...(address ?? {}) };
+  delete rest.countryCode;
   return {
     ...rest,
     postalCode: normalizePostalCode(rest.postalCode),
