@@ -2,29 +2,31 @@
 
 import LinearGradientText from "../common/linear-gradient-text"
 import TabWithSlider from "../common/tabs/tab-with-slider"
+import { useTranslate } from "@/providers/locale-provider";
 
 export default function SingleSlider({ header, buttons, description, cards }: {
-    header?: [{ Value: string, Highlight: boolean }],
+    header?: [{ Value: { en: string, fr: string }, Highlight: boolean }],
     imageUrl?: string,
-    buttons?: [{ withBackground: boolean, url: { current: string }, text: string }],
-    description?: string,
-    cards: [{ imageUrl: string, description: string }]
+    buttons?: [{ withBackground: boolean, url: { current: string }, text: { en: string, fr: string } }],
+    description?: { en: string, fr: string },
+    cards: [{ imageUrl: string, description: { en: string, fr: string } }]
 }) {
+    const t = useTranslate();
     return (
         <>
             <div className="sm:w-[80%] m-auto">
                 <TabWithSlider
                     buttons={buttons}
-                    title={<h1 className="sm:!text-3xl text-xl font-bold" >
+                    title={<div className="sm:!text-3xl text-xl font-bold" >
                         {
                             header!.map((e) => {
                                 if (e.Highlight) {
-                                    return <LinearGradientText extraClass="mr-2" key={e.Value} text={e.Value} />
+                                    return <LinearGradientText extraClass="mr-2" key={t(e.Value)} text={t(e.Value)} />
                                 }
-                                return <span className="mr-2" key={e.Value}>{e.Value}</span>
+                                return <span className="mr-2" key={t(e.Value)}>{t(e.Value)}</span>
                             })
                         }
-                    </h1>}
+                    </div>}
                     description={[description!]}
                     carousel={cards.map((e) => ({ imageSrc: e.imageUrl, description: e.description }))} />
 

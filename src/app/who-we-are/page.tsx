@@ -1,5 +1,28 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About MGC Freight | Ontario Freight Broker | Domestic & Cross-Border Logistics",
+  description: "MGC Freight is an Ontario-based freight platform and 3PL provider connecting shippers with a network of 160,000+ carriers across North America.",
+  keywords: ["about MGC Freight", "who we are", "logistics company", "freight broker", "MGC Freight team", "company values", "careers", "sustainability", "diversity"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "About MGC Freight | Ontario Freight Broker | Domestic & Cross-Border Logistics",
+    description: "MGC Freight is an Ontario-based freight platform and 3PL provider connecting shippers with a network of 160,000+ carriers across North America.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About MGC Freight | Ontario Freight Broker | Domestic & Cross-Border Logistics",
+    description: "MGC Freight is an Ontario-based freight platform and 3PL provider connecting shippers with a network of 160,000+ carriers across North America.",
+  },
+};
+
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -23,7 +46,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function WhoWeAre() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='who-we-are'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -96,13 +119,12 @@ export default async function WhoWeAre() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title

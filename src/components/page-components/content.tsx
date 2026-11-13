@@ -2,6 +2,8 @@ import Image from "next/image";
 import LinearGradientText from "../common/linear-gradient-text";
 import Link from "next/link";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { getLocale } from "@/utils/locale-server";
+import { translate } from "@/utils/locale";
 
 interface ContentProps {
   content: [
@@ -10,23 +12,23 @@ interface ContentProps {
       description?: [
         {
           imageUrl: string;
-          description: string;
-          name?: string;
-          list?: string[];
+          description: { en: string; fr: string };
+          name?: { en: string; fr: string };
+          list?: { en: string; fr: string }[];
         }
       ];
-      header?: [{ Value: string; Highlight: boolean }];
-      arrayContent?: [{ imageUrl: string; name: string; description: string }];
+      header?: [{ Value: { en: string; fr: string }; Highlight: boolean }];
+      arrayContent?: [{ imageUrl: string; name: { en: string; fr: string }; description: { en: string; fr: string } }];
       buttons?: [
-        { withBackground: boolean; url: { current: string }; text: string }
+        { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
       ];
     }
   ];
   customerSpotlight?: boolean;
 }
 
-export default function Content({ content }: ContentProps) {
-  console.log(content);
+export default async function Content({ content }: ContentProps) {
+  const lang = await getLocale();
   return (
     <>
       {
@@ -36,145 +38,148 @@ export default function Content({ content }: ContentProps) {
           {content.map((e) => {
             if (e.imageUrl)
               return (
-                <Image
-                  key={e.imageUrl}
-                  className={`flex-1 ${
-                    content.find((e) => e.header)?.header?.[0].Value ==
+                <div key={e.imageUrl} >
+                  <Image
+                    key={e.imageUrl}
+                    className={`flex-1 ${content.find((item) => item.header)?.header?.[0].Value &&
+                      translate(content.find((item) => item.header)?.header?.[0].Value, lang) ==
                       "Track Your Shipments" && "sm:order-2 order-1"
-                  } `}
-                  src={e.imageUrl}
-                  alt="metrics"
-                  width={500}
-                  height={500}
-                />
+                      } `}
+                    src={e.imageUrl}
+                    alt="metrics"
+                    width={400}
+                    height={400}
+                  />
+                </div>
               );
+
+            const firstHeaderVal = e.header?.[0] ? translate(e.header[0].Value, lang) : '';
             return (
               <div
-                key={e.header![0].Value}
-                className={` ${
-                  e.header?.[0].Value == "Track Your Shipments" &&
+                key={firstHeaderVal}
+                className={` ${firstHeaderVal == "Track Your Shipments" &&
                   "sm:order-1 order-2"
-                } flex flex-1 flex-col sm:items-start items-center sm:text-start text-center gap-4`}
+                  } flex flex-1 flex-col sm:items-start items-center sm:text-start text-center gap-4`}
               >
-                <h1 className="sm:text-[3rem] text-[1.5rem] font-bold">
-                  {e.header!.map((e) => {
-                    if (e.Highlight) {
+                <h2 className="sm:text-[3rem] text-[1.5rem] font-bold">
+                  {e.header!.map((h) => {
+                    const val = translate(h.Value, lang);
+                    if (h.Highlight) {
                       return (
                         <LinearGradientText
                           extraClass="mr-2"
-                          key={e.Value}
-                          text={e.Value}
+                          key={val}
+                          text={h.Value}
                         />
                       );
                     }
                     return (
-                      <span className="mr-2" key={e.Value}>
-                        {e.Value}
+                      <span className="mr-2" key={val}>
+                        {val}
                       </span>
                     );
                   })}
-                </h1>
+                </h2>
 
-                {e.description?.map((e) => {
+                {e.description?.map((d) => {
                   {
-                    if (e.imageUrl) {
+                    const descVal = translate(d.description, lang);
+                    const nameVal = translate(d.name, lang);
+                    if (d.imageUrl) {
                       return (
                         <div
-                          key={e.description}
+                          key={descVal}
                           className="p-4 shadow-lg rounded-lg flex gap-4"
                         >
                           <Image
-                            src={e.imageUrl}
+                            src={d.imageUrl}
                             alt="worldwide"
                             width={50}
                             height={50}
                           />
                           <div className="flex flex-col gap-4 text-start">
                             <p className="text-base-blue font-semibold">
-                              {e.name}
+                              {nameVal}
                             </p>
-                            <p>{e.description}</p>
+                            <p>{descVal}</p>
                           </div>
                         </div>
                       );
                     }
-                    if (e.list)
+                    if (d.list)
                       return (
-                        <div className="grid grid-cols-2 gap-4 w-full">
-                          {e.list.map((e) => (
-                            <div key={e} className="flex gap-4 items-center">
-                              <div className="p-[0.3rem] border-2 border-base-lightBlue  bg-base-blue rounded-full"></div>
-                              <p>{e}</p>
-                            </div>
-                          ))}
+                        <div key={descVal + "list"} className="grid grid-cols-2 gap-4 w-full">
+                          {d.list.map((item) => {
+                            const itemVal = translate(item, lang);
+                            return (
+                              <div key={itemVal} className="flex gap-4 items-center">
+                                <div className="p-[0.3rem] border-2 border-base-lightBlue  bg-base-blue rounded-full"></div>
+                                <p>{itemVal}</p>
+                              </div>
+                            );
+                          })}
                         </div>
                       );
                     return (
-                      <p key={e.description} className="text-text-gray text-md">
-                        {e.description}
+                      <p key={descVal} className="text-text-gray text-md">
+                        {descVal}
                       </p>
                     );
                   }
                 })}
                 <div className="flex ">
-                  {e.arrayContent?.map((j) => (
-                    <div
-                      key={j.name}
-                      className="flex flex-col h-full flex-1 sm:items-start items-center sm:text-start text-center gap-2"
-                    >
-                      {j.imageUrl && (
-                        <Image
-                          src={j.imageUrl}
-                          alt="hand"
-                          width={40}
-                          height={40}
-                        />
-                      )}
-
-                      <h2
-                        className={`font-bold text-xl ${
-                          e.header?.[0].Value == "Track Your Shipments" &&
-                          "!text-3xl font-black"
-                        }`}
+                  {e.arrayContent?.map((j) => {
+                    const nameVal = translate(j.name, lang);
+                    const descVal = translate(j.description, lang);
+                    return (
+                      <div
+                        key={nameVal}
+                        className="flex flex-col h-full flex-1 sm:items-start items-center sm:text-start text-center gap-2"
                       >
-                        {j.name}
-                      </h2>
-                      <p className="text-text-gray">{j.description}</p>
-                    </div>
-                  ))}
-                  {/* <div className="flex flex-col h-full flex-1 sm:items-start items-center sm:text-start text-center gap-2">
-                                    <Image src={'/icons/hand.svg'} alt="hand" width={40} height={40} />
-                                    <h2 className="font-bold">Best Rates</h2>
-                                    <p className="text-text-gray">Best Shipping rates across all the freights</p>
-                                </div>
-                                <div className="flex flex-col h-full flex-1 sm:items-start items-center sm:text-start text-center gap-2">
-                                    <Image src={'/icons/globe-search.svg'} alt="globe search" width={40} height={40} />
-                                    <h2 className="font-bold">15% at Least</h2>
-                                    <p className="text-text-gray">Average Shipping Cost Savings</p>
-                                </div> */}
+                        {j.imageUrl && (
+                          <Image
+                            src={j.imageUrl}
+                            alt="hand"
+                            width={40}
+                            height={40}
+                          />
+                        )}
+
+                        <h2
+                          className={`font-bold text-xl ${firstHeaderVal == "Track Your Shipments" &&
+                            "!text-3xl font-black"
+                            }`}
+                        >
+                          {nameVal}
+                        </h2>
+                        <p className="text-text-gray">{descVal}</p>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="flex gap-4 flex-wrap">
-                  {e.buttons?.map((e) => {
-                    if (e.withBackground) {
+                  {e.buttons?.map((b) => {
+                    const btnText = translate(b.text, lang);
+                    if (b.withBackground) {
                       return (
                         <Link
-                          key={e.url.current + e.text}
-                          href={e.url.current}
+                          key={b.url.current + btnText}
+                          href={b.url.current}
                           className="bg-base-purple min-w-[9rem] flex justify-between items-center rounded-xl px-2 text-white border-2 py-2 "
                         >
-                          {e.text}
+                          {btnText}
                           <MdKeyboardDoubleArrowRight className="text-lg" />
                         </Link>
                       );
                     }
                     return (
                       <Link
-                        key={e.url.current + e.text}
-                        href={e.url.current}
+                        key={b.url.current + btnText}
+                        href={b.url.current}
                         className="bg-transparent min-w-[9rem] flex justify-between items-center rounded-xl px-2 text-base-purple border-2  border-base-purple py-2"
                       >
-                        {e.text}
+                        {btnText}
                         <MdKeyboardDoubleArrowRight className="text-lg" />
                       </Link>
                     );
@@ -183,7 +188,6 @@ export default function Content({ content }: ContentProps) {
               </div>
             );
           })}
-          {/* <Image className="flex-1" src={'/images/metrics.svg'} alt="metrics" width={500} height={500} /> */}
         </div>
       }
     </>

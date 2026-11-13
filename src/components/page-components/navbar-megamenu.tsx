@@ -15,9 +15,8 @@ export default function MegaMenu() {
       onClick={(j) => {
         j.stopPropagation();
       }}
-      className={`${
-        show != null ? "sm:block hidden" : "hidden"
-      } relative w-full `}
+      className={`${show != null ? "sm:block hidden" : "hidden"
+        } relative w-full `}
     >
       <div className={`sm:px-8 px-4 py-4  absolute top-0 z-[99] w-full left-0`}>
         <div className="min-h-[10rem] shadow-[5px_10px_25px_grey] bg-white grid grid-cols-[2fr_1fr] rounded-lg p-8">
@@ -35,7 +34,7 @@ export default function MegaMenu() {
                   <Image
                     key={e.icon}
                     src={e.icon}
-                    alt="icon"
+                    alt={`${e.title} icon`}
                     width={50}
                     height={50}
                   />
@@ -52,7 +51,7 @@ export default function MegaMenu() {
             <div className="relative">
               <Image
                 src={"/megamenu.svg"}
-                alt="mega"
+                alt="menu icon"
                 className="min-h-[18rem] rounded-xl"
                 width={400}
                 height={200}
@@ -61,7 +60,7 @@ export default function MegaMenu() {
               <div className="absolute bottom-10 left-4 flex flex-col gap-2">
                 <Image
                   src={"/logo-white.svg"}
-                  alt="icon white"
+                  alt="MGC logo white"
                   width={200}
                   height={200}
                 />

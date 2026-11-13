@@ -1,4 +1,5 @@
 import BaseSlider from "@/components/common/base-slider";
+import { useTranslate } from "@/providers/locale-provider";
 import { TabWithSliderProps } from "@/utils/types";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
@@ -37,9 +38,9 @@ const components = {
   block: {
     // Ex. 1: customizing common block types
     h1: ({ children }: any) => (
-      <h1 className="text-2xl mt-5 font-semibold">{children}</h1>
+      <div className="text-2xl mt-5 font-semibold">{children}</div>
     ),
-    normal: ({ children }: any) => <h1 className=" mt-2 ">{children}</h1>,
+    normal: ({ children }: any) => <div className=" mt-2 ">{children}</div>,
 
     blockquote: ({ children }: any) => (
       <blockquote className="border-l-purple-500">{children}</blockquote>
@@ -75,14 +76,15 @@ export default function TabWithSlider({
   buttons,
   content,
 }: TabWithSliderProps) {
+  const t = useTranslate();
   return (
     <div className="flex flex-col gap-4 w-full items-center text-center p-4">
       {title}
       {description && description.length > 0 && (
         <div className="flex flex-col gap-1">
           {description.map((e) => (
-            <p key={e} className="text-text-gray">
-              {e}
+            <p key={t(e)} className="text-text-gray">
+              {t(e)}
             </p>
           ))}
         </div>
@@ -99,7 +101,7 @@ export default function TabWithSlider({
                   width={200}
                   height={200}
                 />
-                <p>{e.description}</p>
+                <p>{t(e.description)}</p>
               </div>
             </div>
           ))}
@@ -121,7 +123,7 @@ export default function TabWithSlider({
                   href={e.url.current}
                   className="bg-base-purple min-w-[9rem] flex justify-between items-center rounded-xl px-2 text-white border-2 py-2 "
                 >
-                  {e.text}
+                  {t(e.text)}
                   <MdKeyboardDoubleArrowRight className="text-lg" />
                 </Link>
               );
@@ -132,7 +134,7 @@ export default function TabWithSlider({
                 href={e.url.current}
                 className="bg-transparent min-w-[9rem] flex justify-between items-center rounded-xl px-2 text-base-purple border-2  border-base-purple py-2"
               >
-                {e.text}
+                {t(e.text)}
                 <MdKeyboardDoubleArrowRight className="text-lg" />
               </Link>
             );

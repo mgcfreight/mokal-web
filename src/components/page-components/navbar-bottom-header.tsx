@@ -37,7 +37,7 @@ export default function NavbarBottomHeader({ logo }: { logo: string }) {
         <div className="flex sm:flex-row flex-col sm:w-max w-full sm:gap-8 gap-4">
           <div className="flex justify-between items-center">
             <Link href={"/"}>
-              <Image src={logo} alt="logo" width={200} height={200} />
+              <Image src={logo} alt="logo" width={150} height={200} />
             </Link>
             <HiMenu className="sm:hidden" onClick={() => onOpen()} size={30} />
           </div>
@@ -46,7 +46,7 @@ export default function NavbarBottomHeader({ logo }: { logo: string }) {
               href={"/get-a-quote"}
               className="!bg-transparent text-base-purple w-max border-2 flex items-center p-2 rounded-xl border-base-purple font-semibold"
             >
-              Get Quick Quote
+              Quick Quote
             </Link>
             <Link
               href={"/book-a-demo"}
@@ -154,7 +154,7 @@ export default function NavbarBottomHeader({ logo }: { logo: string }) {
                               <Image
                                 key={e.icon}
                                 src={e.icon}
-                                alt="icon"
+                                alt={`${e.title} icon`}
                                 width={50}
                                 height={50}
                               />
@@ -182,14 +182,14 @@ export default function NavbarBottomHeader({ logo }: { logo: string }) {
                   <Image
                     src={"/megamenu.svg"}
                     className="min-h-[18rem] rounded-xl"
-                    alt="mega"
+                    alt="menu icon"
                     width={400}
                     height={200}
                   />
                   <div className="absolute bottom-10 left-4 flex flex-col gap-2">
                     <Image
                       src={"/logo-white.svg"}
-                      alt="icon white"
+                      alt="MGC logo white"
                       width={200}
                       height={200}
                     />

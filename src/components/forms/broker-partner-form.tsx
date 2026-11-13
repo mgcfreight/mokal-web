@@ -50,12 +50,12 @@ export default function BrokerPartnerForm() {
           width={200}
           height={200}
         />
-        <h1 className="sm:text-[2rem] text-[1.5rem] font-bold">
+        <div className="sm:text-[2rem] text-[1.5rem] font-bold">
           <LinearGradientText
             extraClass=""
-            text="Discover the MGC Freight Advantage"
+            text={{ en: "Discover the MGC Freight Advantage", fr: "Découvrez l'avantage de MGC Freight" }}
           />
-        </h1>
+        </div>
         <p className="text-text-gray text-md">
           Our tailored shipping solutions empower businesses of all sizes with
           speed, reliability, and significant cost savings on pallet, parcel,
@@ -74,9 +74,9 @@ export default function BrokerPartnerForm() {
         onSubmit={handleSubmit(brokerPartner)}
         className="flex bg-base-shadeBlue p-8 rounded-xl flex-col gap-8 flex-1 items-start"
       >
-        <h1 className="text-2xl font-semibold">
+        <div className="text-2xl font-semibold">
           Reach Out to a Broker Representative
-        </h1>
+        </div>
 
         <BaseInput
           name="firstName"

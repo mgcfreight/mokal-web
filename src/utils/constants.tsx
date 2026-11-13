@@ -205,13 +205,13 @@ export const HomePageTabs = [
     component: (
       <TabNoSlider
         title={
-          <h1 className="sm:!text-3xl text-lg font-bold">
-            Comprehensive <LinearGradientText text="Fulfillment Services" /> for
+          <h3 className="sm:!text-3xl text-lg font-bold">
+            Comprehensive <LinearGradientText text={{ en: "Fulfillment Services", fr: "Services d'exécution" }} /> for
             Your Business
-          </h1>
+          </h3>
         }
         description={[
-          "Simplify your logistics with MGC Freight! We offer end-to-end fulfillment solutions, including efficient order processing, secure warehousing, and hassle-free shipping, ensuring a smooth experience for you and your customers.",
+          { en: "Simplify your logistics with MGC Freight! We offer end-to-end fulfillment solutions, including efficient order processing, secure warehousing, and hassle-free shipping, ensuring a smooth experience for you and your customers.", fr: "Simplifiez votre logistique avec MGC Freight! Nous offrons des solutions d'exécution complètes, y compris le traitement efficace des commandes, l'entreposage sécurisé et l'expédition sans tracas, garantissant une expérience fluide pour vous et vos clients.", },
         ]}
       />
     ),
@@ -221,49 +221,49 @@ export const HomePageTabs = [
     component: (
       <TabWithSlider
         title={
-          <h1 className="sm:!text-3xl text-lg font-bold">
+          <h3 className="sm:!text-3xl text-lg font-bold">
             Trusted Courier Partner Solutions for{" "}
-            <LinearGradientText text="Seamless Deliveries" />
-          </h1>
+            <LinearGradientText text={{ en: "Seamless Deliveries", fr: "Livraisons Impeccables" }} />
+          </h3>
         }
         description={[
-          "Enhance your shipping capabilities with MGC Freight’s reliable courier partnerships. We ensure timely deliveries, secure handling, and exceptional service, providing your business with the flexibility and efficiency needed to satisfy your customers every step of the way.",
+          { en: "Enhance your shipping capabilities with MGC Freight’s reliable courier partnerships. We ensure timely deliveries, secure handling, and exceptional service, providing your business with the flexibility and efficiency needed to satisfy your customers every step of the way.", fr: "Améliorez vos capacités d'expédition avec les partenariats de messagerie fiables de MGC Freight. Nous garantissons des livraisons rapides, une manutention sécurisée et un service exceptionnel, offrant à votre entreprise la flexibilité et l'efficacité nécessaires pour satisfaire vos clients à chaque étape du processus." },
         ]}
         carousel={[
           {
             imageSrc: "/couriers/Artboard.svg",
             description:
-              "Shipping, courier, and expedited transport services within the US, Canada.",
+              { en: "Shipping, courier, and expedited transport services within the US, Canada.", fr: "Services d'expédition, de messagerie et de transport accéléré aux États-Unis et au Canada." },
           },
           {
             imageSrc: "/couriers/gardewine.svg",
             description:
-              "Leading trucking company providing logistics services across Canada for 70+ years.",
+              { en: "Leading trucking company providing logistics services across Canada for 70+ years.", fr: "Principale entreprise de transport routier fournissant des services logistiques à travers le Canada depuis plus de 70 ans." },
           },
           {
             imageSrc: "/couriers/DayandRoss.svg",
             description:
-              "Logistics company that operates in various sectors, including logistics solutions",
+              { en: "Logistics company that operates in various sectors, including logistics solutions", fr: "Entreprise de logistique opérant dans divers secteurs, y compris les solutions logistiques" },
           },
           {
             description:
-              "Canada’s most trusted transport carrier for over 60 years.",
+              { en: "Canada’s most trusted transport carrier for over 60 years.", fr: "Transporteur le plus fiable au Canada depuis plus de 60 ans." },
             imageSrc: "/couriers/M-O-2.svg",
           },
           {
             imageSrc: "/couriers/kindersley.svg",
             description:
-              "Providing truckload and LTL service throughout North America",
+              { en: "Providing truckload and LTL service throughout North America", fr: "Fourniture de services de transport complet et LTL à travers l'Amérique du Nord" },
           },
           {
             imageSrc: "/couriers/DHL.svg",
             description:
-              "American-founded German logistics company delivering over 1.8 billion parcels per year.",
+              { en: "American-founded German logistics company delivering over 1.8 billion parcels per year.", fr: "Entreprise de logistique allemande fondée en Amérique, livrant plus de 1,8 milliard de colis par an." },
           },
           {
             imageSrc: "/couriers/Canpar.svg",
             description:
-              "Helping small parcel delivery companies’ shipping processes on a day-to-day basis.",
+              { en: "Helping small parcel delivery companies’ shipping processes on a day-to-day basis.", fr: "Aide les petites entreprises de livraison de colis dans leurs processus d'expédition au quotidien." },
           },
         ]}
       />
@@ -274,49 +274,49 @@ export const HomePageTabs = [
     component: (
       <TabWithSlider
         title={
-          <h1 className="sm:!text-3xl text-lg font-bold">
-            Reliable <LinearGradientText text="LTL (Less Than Truckload)" />{" "}
+          <h3 className="sm:!text-3xl text-lg font-bold">
+            Reliable <LinearGradientText text={{ en: "LTL (Less Than Truckload)", fr: "LTL (Moins qu'un chargement complet)" }} />{" "}
             Partner Solutions
-          </h1>
+          </h3>
         }
         description={[
-          "Optimize your freight shipping with MGC Freight’s LTL services. We provide cost-effective and flexible solutions, ensuring your smaller shipments are delivered safely and on time, no matter the destination.",
+          { en: "Optimize your freight shipping with MGC Freight’s LTL services. We provide cost-effective and flexible solutions, ensuring your smaller shipments are delivered safely and on time, no matter the destination.", fr: "Optimisez votre expédition de fret avec les services LTL de MGC Freight. Nous fournissons des solutions rentables et flexibles, garantissant que vos expéditions plus petites sont livrées en toute sécurité et à temps, quelle que soit la destination." },
         ]}
         carousel={[
           {
             imageSrc: "/couriers/Artboard.svg",
             description:
-              "Shipping, courier, and expedited transport services within the US, Canada.",
+              { en: "Shipping, courier, and expedited transport services within the US, Canada.", fr: "Services d'expédition, de messagerie et de transport accéléré aux États-Unis et au Canada." },
           },
           {
             imageSrc: "/couriers/gardewine.svg",
             description:
-              "Leading trucking company providing logistics services across Canada for 70+ years.",
+              { en: "Leading trucking company providing logistics services across Canada for 70+ years.", fr: "Principale entreprise de transport routier fournissant des services logistiques à travers le Canada depuis plus de 70 ans." },
           },
           {
             imageSrc: "/couriers/DayandRoss.svg",
             description:
-              "Logistics company that operates in various sectors, including logistics solutions",
+              { en: "Logistics company that operates in various sectors, including logistics solutions", fr: "Entreprise de logistique opérant dans divers secteurs, y compris les solutions logistiques" },
           },
           {
             description:
-              "Canada’s most trusted transport carrier for over 60 years.",
+              { en: "Canada’s most trusted transport carrier for over 60 years.", fr: "Le transporteur le plus fiable au Canada depuis plus de 60 ans." },
             imageSrc: "/couriers/M-O-2.svg",
           },
           {
             imageSrc: "/couriers/kindersley.svg",
             description:
-              "Providing truckload and LTL service throughout North America",
+              { en: "Providing truckload and LTL service throughout North America", fr: "Fourniture de services de transport complet et LTL à travers l'Amérique du Nord" },
           },
           {
             imageSrc: "/couriers/DHL.svg",
             description:
-              "American-founded German logistics company delivering over 1.8 billion parcels per year.",
+              { en: "American-founded German logistics company delivering over 1.8 billion parcels per year.", fr: "Entreprise de logistique allemande fondée en Amérique, livrant plus de 1,8 milliard de colis par an." },
           },
           {
             imageSrc: "/couriers/Canpar.svg",
             description:
-              "Helping small parcel delivery companies’ shipping processes on a day-to-day basis.",
+              { en: "Helping small parcel delivery companies’ shipping processes on a day-to-day basis.", fr: "Aide les petites entreprises de livraison de colis dans leurs processus d'expédition au quotidien." },
           },
         ]}
       />
@@ -327,13 +327,13 @@ export const HomePageTabs = [
     component: (
       <TabNoSlider
         title={
-          <h1 className="sm:!text-3xl text-lg font-bold">
-            The <LinearGradientText text="Ultimate Platform" /> for Freight
+          <h3 className="sm:!text-3xl text-lg font-bold">
+            The <LinearGradientText text={{ en: "Ultimate Platform", fr: "La plateforme ultime" }} /> for Freight
             Brokers
-          </h1>
+          </h3>
         }
         description={[
-          "Streamline your operations with MGC Freight’s broker-friendly solutions. We offer efficient tools and reliable support to help you manage shipments, connect with carriers, and ensure seamless deliveries for your clients.",
+          { en: "Streamline your operations with MGC Freight’s broker-friendly solutions. We offer efficient tools and reliable support to help you manage shipments, connect with carriers, and ensure seamless deliveries for your clients.", fr: "Simplifiez vos opérations avec les solutions conviviales de MGC Freight pour les courtiers. Nous offrons des outils efficaces et un soutien fiable pour vous aider à gérer les expéditions, à vous connecter avec les transporteurs et à assurer des livraisons fluides pour vos clients." },
         ]}
       />
     ),
@@ -343,14 +343,14 @@ export const HomePageTabs = [
     component: (
       <TabNoSlider
         title={
-          <h1 className="sm:!text-3xl text-lg font-bold">
+          <h3 className="sm:!text-3xl text-lg font-bold">
             Fast, Reliable Spot Quotes to{" "}
-            <LinearGradientText text="Simplify Your Freight Booking" />
-          </h1>
+            <LinearGradientText text={{ en: "Simplify Your Freight Booking", fr: "Simplifiez votre réservation de fret" }} />
+          </h3>
         }
         description={[
-          "MGC Freight eliminates the hassle of spot quoting, reducing your workload and boosting efficiency.",
-          "Looking for PTL or FTL services? Let us connect you with the best options and pricing through our trusted carrier network!",
+          { en: "MGC Freight eliminates the hassle of spot quoting, reducing your workload and boosting efficiency.", fr: "MGC Freight élimine les tracas liés aux cotations ponctuelles, réduisant ainsi votre charge de travail et augmentant votre efficacité." },
+          { en: "Looking for PTL or FTL services? Let us connect you with the best options and pricing through our trusted carrier network!", fr: "Vous recherchez des services PTL ou FTL? Laissez-nous vous mettre en relation avec les meilleures options et tarifs grâce à notre réseau de transporteurs de confiance!" },
         ]}
       />
     ),
@@ -360,13 +360,13 @@ export const HomePageTabs = [
     component: (
       <TabNoSlider
         title={
-          <h1 className="sm:!text-3xl text-lg font-bold">
-            Simplified and Swift <LinearGradientText text="Claims Resolution" />
-          </h1>
+          <h3 className="sm:!text-3xl text-lg font-bold">
+            Simplified and Swift <LinearGradientText text={{ en: "Claims Resolution", fr: "Résolution rapide et simplifiée des réclamations" }} />
+          </h3>
         }
         description={[
-          "Say goodbye to the hassle of filing claims with MGC Freight! Our intuitive claims system ensures quick and easy resolutions.",
-          "Need assistance? Our dedicated and friendly claims experts are here to guide you every step of the way.",
+          { en: "Say goodbye to the hassle of filing claims with MGC Freight! Our intuitive claims system ensures quick and easy resolutions.", fr: "Dites adieu aux tracas liés au dépôt de réclamations avec MGC Freight! Notre système de réclamation intuitif garantit des résolutions rapides et faciles." },
+          { en: "Need assistance? Our dedicated and friendly claims experts are here to guide you every step of the way.", fr: "Besoin d'aide? Nos experts en réclamations dévoués et amicaux sont là pour vous guider à chaque étape du processus." },
         ]}
       />
     ),

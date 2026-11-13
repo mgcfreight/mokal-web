@@ -41,9 +41,9 @@ const components = {
   block: {
     // Ex. 1: customizing common block types
     h1: ({ children }: any) => (
-      <h1 className="text-2xl mt-5 font-semibold">{children}</h1>
+      <div className="text-2xl mt-5 font-semibold">{children}</div>
     ),
-    normal: ({ children }: any) => <h1 className=" mt-2 ">{children}</h1>,
+    normal: ({ children }: any) => <div className=" mt-2 ">{children}</div>,
 
     blockquote: ({ children }: any) => (
       <blockquote className="border-l-purple-500">{children}</blockquote>

@@ -47,16 +47,16 @@ export default function CorporatePartnerForm() {
         <div className="flex flex-1 flex-col sm:items-start items-center sm:text-start text-center gap-4">
           <Image
             src={"/images/office-building (1).svg"}
-            alt="broker"
+            alt="office building"
             width={200}
             height={200}
           />
-          <h1 className="sm:text-[2rem] text-[1.5rem] font-bold">
+          <div className="sm:text-[2rem] text-[1.5rem] font-bold">
             <LinearGradientText
               extraClass=""
-              text="Building Strong Partnerships"
+              text={{ en: "Building Strong Partnerships", fr: "Établir des partenariats solides" }}
             />
-          </h1>
+          </div>
           <p className="text-text-gray text-md">
             Our Corporate Partnership program is designed to create meaningful
             cross-promotional opportunities. Highlight special offers to MGC
@@ -76,9 +76,9 @@ export default function CorporatePartnerForm() {
           onSubmit={handleSubmit(corporatePartner)}
           className="flex bg-base-shadeBlue p-8 rounded-xl flex-col gap-8 flex-1 items-start"
         >
-          <h1 className="text-2xl font-semibold">
+          <div className="text-2xl font-semibold">
             Reach Out to a Broker Representative
-          </h1>
+          </div>
           <BaseInput
             name="firstName"
             rules={{ required: "First Name is required" }}

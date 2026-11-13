@@ -48,11 +48,11 @@ export default function CareerOppurtunities() {
       className={`  p-8 flex flex-col gap-16 sm:w-[80%] m-auto items-center `}
     >
       <div>
-        <h1 className="sm:text-[2.3rem] text-[1.5rem] font-bold">
-          Current <LinearGradientText text="Career Opportunities" />
-        </h1>
+        <div className="sm:text-[2.3rem] text-[1.5rem] font-bold">
+          Current <LinearGradientText text={{ en: "Career Opportunities", fr: "Possibilités de Carrière" }} />
+        </div>
         <p className="text-text-darkGray">
-          View available openings with Freightcom across our many locations.
+          View available openings with MGC Freight across our many locations.
         </p>
       </div>
       <BaseInput
@@ -63,7 +63,7 @@ export default function CareerOppurtunities() {
         placeholder="Search Positions"
         endContent={<BiSearch size={20} />}
       />
-      {data && (
+      {data && data.data.data.length !== 0 && (
         <div className="flex flex-col gap-8 w-full">
           <Accordion variant="splitted" className="p-0">
             {data.data.data.map((e: any, index: number) => (
@@ -77,7 +77,7 @@ export default function CareerOppurtunities() {
                 title={e.name}
                 indicator={
                   <p
-                    onClick={() => {}}
+                    onClick={() => { }}
                     className="p-2 bg-transparent border-base-blue border-2 rounded-xl text-base-blue "
                   >
                     Apply Now
@@ -130,9 +130,8 @@ export default function CareerOppurtunities() {
                   .map((e: any) => (
                     <BaseButton
                       onClick={() => setPage(e)}
-                      className={`${
-                        e == page && "!bg-base-blue !text-white"
-                      } bg-transparent`}
+                      className={`${e == page && "!bg-base-blue !text-white"
+                        } bg-transparent`}
                       key={e}
                     >
                       {e}

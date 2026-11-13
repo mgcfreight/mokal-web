@@ -11,9 +11,9 @@ export default function Quote() {
         height={400}
         width={400}
       />
-      <h1 className="font-semibold text-3xl">
+      <div className="font-semibold text-3xl">
         Shipping Quote  <span className="text-base-purple">Sent Successfully!</span>
-      </h1>
+      </div>
       <p>
         Your shipping quote has been sent to your email. Please check your inbox
         for further details. If you don’t see it, kindly check your spam or junk

@@ -57,10 +57,10 @@ export default function Details() {
     const packageType = reefer
       ? FTLPackageType.REEFER
       : flatbed
-      ? FTLPackageType.FLATBED
-      : container
-      ? FTLPackageType.CONTAINER
-      : FTLPackageType.VAN;
+        ? FTLPackageType.FLATBED
+        : container
+          ? FTLPackageType.CONTAINER
+          : FTLPackageType.VAN;
     // Build the body field by field so it carries exactly the fields
     // QuoteRequestFTLDTO declares. UI-only form state such as the
     // flatbed/reefer/van/container toggles isn't part of the request.

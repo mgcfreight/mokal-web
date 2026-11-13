@@ -1,3 +1,26 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Spot Quote Freight Pricing | Urgent & Expedited Shipments Canada | MGC Freight",
+  description: "Need urgent freight pricing? MGC Freight provides instant spot quotes for time-sensitive, oversized, refrigerated, FTL and same-day shipments across North America.",
+  keywords: ["spot quote", "freight rates", "quick quote", "shipping prices", "MGC Freight spot", "instant quote", "freight cost"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Spot Quote Freight Pricing | Urgent & Expedited Shipments Canada | MGC Freight",
+    description: "Need urgent freight pricing? MGC Freight provides instant spot quotes for time-sensitive, oversized, refrigerated, FTL and same-day shipments across North America.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Spot Quote Freight Pricing | Urgent & Expedited Shipments Canada | MGC Freight",
+    description: "Need urgent freight pricing? MGC Freight provides instant spot quotes for time-sensitive, oversized, refrigerated, FTL and same-day shipments across North America.",
+  },
+};
+
 // import BaseButton from "@/components/common/base-button";
 // import LinearGradientText from "@/components/common/linear-gradient-text";
 // import Image from "next/image";
@@ -19,7 +42,7 @@ import Content from "@/components/page-components/content";
 import TabPageComponent from "@/components/page-components/tab";
 import Title from "@/components/page-components/title";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import SingleSlider from "@/components/page-components/single-slider";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
@@ -31,7 +54,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function SpotQuote() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='spot-quote'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -104,18 +127,17 @@ export default async function SpotQuote() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Spot Quote"]}
+                  breadCrumb={["Services", "Spot Quote"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

@@ -1,3 +1,27 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "3PL Fulfillment Services Canada | Pick, Pack & Ship | MGC Freight",
+  description: "MGC Freight's 3PL fulfillment services handle order processing, warehousing, pick-and-pack, and shipping for growing Canadian businesses.",
+  keywords: ["fulfillment services", "order fulfillment", "e-commerce fulfillment", "MGC Freight", "warehousing", "inventory management", "logistics services", "shipping services", "3PL", "supply chain management"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "3PL Fulfillment Services Canada | Pick, Pack & Ship | MGC Freight",
+    description: "MGC Freight's 3PL fulfillment services handle order processing, warehousing, pick-and-pack, and shipping for growing Canadian businesses.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "3PL Fulfillment Services Canada | Pick, Pack & Ship | MGC Freight",
+    description: "MGC Freight's 3PL fulfillment services handle order processing, warehousing, pick-and-pack, and shipping for growing Canadian businesses.",
+  },
+};
+
 // import BaseButton from "@/components/common/base-button";
 // import LinearGradientText from "@/components/common/linear-gradient-text";
 // import Image from "next/image";
@@ -7,7 +31,7 @@ import GrowYourBusiness from "@/components/page-components/grow-your-business";
 // import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 // import Link from "next/link";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -17,7 +41,7 @@ import RefineTransportPage from "@/components/page-components/refine-transportPa
 import CardsContent from "@/components/page-components/cards-content";
 import MainBlog from "@/components/page-components/main-blog";
 import Testimonials from "@/components/page-components/testimonials";
-import Content2 from "@/components/page-components/content2";
+// import Content2 from "@/components/page-components/content2";
 import GuideToBook from "@/components/page-components/guide-to-book";
 import SingleSlider from "@/components/page-components/single-slider";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
@@ -28,9 +52,11 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function FulfillmentServices() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='fullfillment'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -95,26 +121,39 @@ export default async function FulfillmentServices() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("Fulfillment Services", "Streamline your e-commerce and retail supply chain with our end-to-end order fulfillment, warehousing, and inventory management.", "https://www.mgcfreight.com/fulfillment-services", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Fulfillment Services"]}
+                  breadCrumb={["Services", "Fulfillment Services"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}
@@ -160,7 +199,7 @@ export default async function FulfillmentServices() {
                   testimonials={e.testimonials}
                 />
               )}
-              {e._type == "contentPageComponent" && (
+              {/* {e._type == "contentPageComponent" && (
                 <Content2
                   images={e.images}
                   buttons={e.buttons}
@@ -168,7 +207,7 @@ export default async function FulfillmentServices() {
                   header={e.header!}
                   video={e.video}
                 />
-              )}
+              )} */}
               {e._type == "guideComponent" && <GuideToBook />}
               {(e._type == "growYourBusiness" ||
                 e._type == "spotQuoteForm") && <GrowYourBusiness />}

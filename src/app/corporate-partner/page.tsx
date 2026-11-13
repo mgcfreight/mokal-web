@@ -1,5 +1,28 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Corporate Partnership Program | MGC Freight",
+  description: "Partner with MGC Freight for enterprise-level logistics, dedicated capacity, and custom freight management solutions.",
+  keywords: ["corporate partnership", "enterprise logistics", "freight management", "MGC Freight", "strategic partnership", "logistics solutions", "supply chain partnership", "dedicated capacity", "carrier partnership"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Corporate Partnership | MGC Freight",
+    description: "Enterprise logistics partnerships with dedicated capacity and custom solutions.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Corporate Partnership | MGC Freight",
+    description: "Partner with us for enterprise-level logistics solutions.",
+  },
+};
+
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -23,7 +46,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function CorporatePartner() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='corporate-partner'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -96,13 +119,12 @@ export default async function CorporatePartner() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title

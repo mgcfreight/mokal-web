@@ -1,3 +1,27 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Specialized Freight Services Ontario | MGC Freight",
+  description: "MGC Freight handles specialized freight including hazardous materials, oversized loads, freeze-protection, in-bond cargo, and Amazon FBA shipments.",
+  keywords: ["specialized freight", "heavy haul", "oversized loads", "complex shipments", "MGC Freight", "logistics services", "custom shipping", "delicate cargo"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Specialized Freight Services Ontario | MGC Freight",
+    description: "MGC Freight handles specialized freight including hazardous materials, oversized loads, freeze-protection, in-bond cargo, and Amazon FBA shipments.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Specialized Freight Services Ontario | MGC Freight",
+    description: "MGC Freight handles specialized freight including hazardous materials, oversized loads, freeze-protection, in-bond cargo, and Amazon FBA shipments.",
+  },
+};
+
 // 'use client'
 // import BaseButton from "@/components/common/base-button";
 // import LinearGradientText from "@/components/common/linear-gradient-text";
@@ -9,7 +33,7 @@
 // import TabWithSlider from "@/components/common/tabs/tab-with-slider";
 // import Link from "next/link";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -31,9 +55,11 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function SpecializedFreight() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='specialized-freight'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -98,26 +124,39 @@ export default async function SpecializedFreight() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("Specialized Freight Shipping", "Expert handling for unique, oversized, or complex shipments. Find customized shipping solutions with MGC Freight.", "https://www.mgcfreight.com/specialized-freight", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Specialized Freight"]}
+                  breadCrumb={["Services", "Specialized Freight"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

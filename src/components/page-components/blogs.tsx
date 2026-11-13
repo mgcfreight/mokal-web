@@ -11,6 +11,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ImSpinner9 } from "react-icons/im";
 import { useDebouncedValue } from "@/utils/use-debounced-value";
+import { useTranslate } from "@/providers/locale-provider";
 
 export default function BlogsClient({ data }: { data: Blogs }) {
   const { control, watch } = useForm();
@@ -23,6 +24,7 @@ export default function BlogsClient({ data }: { data: Blogs }) {
       axios.get("/api/blog", { params: { searchQuery: queryKey[1] } }),
     enabled: !!debouncedSearch,
   });
+  const t = useTranslate();
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -31,9 +33,9 @@ export default function BlogsClient({ data }: { data: Blogs }) {
             className={`flex flex-col items-center m-auto sm:px-8 px-4 py-4 sm:w-1/2  text-center gap-4`}
           >
             <div className="flex flex-col ">
-              <h1 className="sm:text-[3rem] text-[1.8rem] font-bold">
-                <LinearGradientText text="Blogs" />{" "}
-              </h1>
+              <div className="sm:text-[3rem] text-[1.8rem] font-bold">
+                <LinearGradientText text={{ en: 'Blogs', fr: 'Blogues' }} />{" "}
+              </div>
             </div>
             <BaseBreadCrumb items={["Resources", "Blogs"]} />
           </div>
@@ -72,14 +74,14 @@ export default function BlogsClient({ data }: { data: Blogs }) {
                       height={70}
                       width={70}
                     />
-                    <p className="font-semibold text-xl">{e.title}</p>
+                    <p className="font-semibold text-xl">{t(e.title)}</p>
                     <p className="text-xs text-text-gray">
                       Posted on {new Date(e.publishedAt).toDateString()}
                     </p>
                     <div className="flex gap-2 w-full items-center">
                       <Image
                         src={e.authorImg}
-                        alt="person"
+                        alt="author"
                         height={30}
                         width={30}
                       />

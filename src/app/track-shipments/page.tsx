@@ -1,6 +1,29 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Track Shipments | MGC Freight",
+  description: "Track your freight shipment in real-time. Get real-time status updates and end-to-end tracking for your cargo.",
+  keywords: ["freight tracking", "shipment tracking", "cargo tracking", "MGC Freight tracking", "real-time tracking", "LTL tracking", "truckload tracking"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Track Shipments | MGC Freight",
+    description: "Track your freight shipment in real-time with MGC Freight. Get instant status updates for your cargo.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Track Shipments | MGC Freight",
+    description: "Track your freight shipment in real-time.",
+  },
+};
+
 import TrackShipment from "@/components/page-components/track-shipment";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -28,7 +51,7 @@ export default async function TrackShipments({
 }: {
   searchParams: Promise<{ id: string }>;
 }) {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='track-shipment'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -101,13 +124,12 @@ export default async function TrackShipments({
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title

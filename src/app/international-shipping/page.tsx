@@ -1,3 +1,27 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "International Shipping from Canada, USA & Mexico | MGC Freight",
+  description: "Ship internationally from Canada, the US, or Mexico. Automated customs paperwork, real-time tracking and competitive rates with trusted global carriers.",
+  keywords: ["international shipping", "global logistics", "freight forwarding", "MGC Freight", "cross-border shipping", "USA Canada Mexico", "international freight", "ocean freight", "air freight", "customs clearance", "supply chain services"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "International Shipping from Canada, USA & Mexico | MGC Freight",
+    description: "Ship internationally from Canada, the US, or Mexico. Automated customs paperwork, real-time tracking and competitive rates with trusted global carriers.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "International Shipping from Canada, USA & Mexico | MGC Freight",
+    description: "Ship internationally from Canada, the US, or Mexico. Automated customs paperwork, real-time tracking and competitive rates with trusted global carriers.",
+  },
+};
+
 // import BaseButton from "@/components/common/base-button";
 // import LinearGradientText from "@/components/common/linear-gradient-text";
 // import Image from "next/image";
@@ -7,7 +31,7 @@
 // import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 // import Link from "next/link";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -29,10 +53,11 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
-// import CustomerBase from "@/components/page-components/customer-base";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function InternationalShipping() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='international-shipping'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -97,26 +122,39 @@ export default async function InternationalShipping() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("International Shipping", "Cross-border and global logistics solutions. Ship seamlessly between the USA, Canada, Mexico, and worldwide with MGC Freight.", "https://www.mgcfreight.com/international-shipping", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","International Shipping"]}
+                  breadCrumb={["Services", "International Shipping"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

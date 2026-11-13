@@ -64,12 +64,12 @@ export default function BookADemoForm() {
       className={`flex sm:flex-row flex-col m-auto sm:px-8 px-4 sm:py-20 py-16 sm:w-[80%] shadow-lg rounded-xl text-center sm:gap-16 gap-8`}
     >
       <div className="flex flex-1 flex-col sm:items-start items-center sm:text-start text-center gap-4">
-        <h1 className="sm:text-[2rem] text-[1.5rem] font-bold">
+        <div className="sm:text-[2rem] text-[1.5rem] font-bold">
           <LinearGradientText
             extraClass=""
-            text="Discover the MGC Freight Advantage"
+            text={{ en: "Discover the MGC Freight Advantage", fr: "Découvrez les avantages du fret MGC" }}
           />
-        </h1>
+        </div>
         <p className="text-text-gray text-md">
           Our tailored shipping solutions empower businesses of all sizes with
           speed, reliability, and significant cost savings on pallet, parcel,
@@ -88,7 +88,7 @@ export default function BookADemoForm() {
         onSubmit={handleSubmit(bookDemo)}
         className="flex flex-col gap-8 flex-1 items-start"
       >
-        <h1 className="text-2xl font-semibold">Reach Out to Book a Demo</h1>
+        <div className="text-2xl font-semibold">Reach Out to Book a Demo</div>
         <BaseSelect
           control={control}
           name="region"

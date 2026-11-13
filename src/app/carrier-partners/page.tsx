@@ -1,3 +1,27 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Carrier Partners | Freight Carriers Working with MGC Freight | Ontario Broker Network",
+  description: "MGC Freight partners with North America's leading freight carriers for LTL, FTL, reefer, and expedited shipments. See our carrier network and learn why shippers across Canada trust MGC Freight.",
+
+  keywords: ["carrier partners", "trucking jobs", "freight carrier", "MGC Freight", "carrier opportunities", "reliable loads", "trucking company", "carrier network", "payment terms"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Carrier Partners | Freight Carriers Working with MGC Freight | Ontario Broker Network",
+    description: "MGC Freight partners with North America's leading freight carriers for LTL, FTL, reefer, and expedited shipments. See our carrier network and learn why shippers across Canada trust MGC Freight.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Carrier Partners | Freight Carriers Working with MGC Freight | Ontario Broker Network",
+    description: "MGC Freight partners with North America's leading freight carriers for LTL, FTL, reefer, and expedited shipments. See our carrier network and learn why shippers across Canada trust MGC Freight.",
+  },
+};
+
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -12,7 +36,7 @@ import GuideToBook from "@/components/page-components/guide-to-book";
 import GrowYourBusiness from "@/components/page-components/grow-your-business";
 import SingleSlider from "@/components/page-components/single-slider";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
 import BookADemoForm from "@/components/forms/book-a-demo";
@@ -23,7 +47,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 
 export default async function CarrierPartners() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='carrier-partner'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -96,18 +120,17 @@ export default async function CarrierPartners() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Partnership", "Carrier","Contract Carriers"]}
+                  breadCrumb={["Partnership", "Carrier", "Contract Carriers"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

@@ -1,4 +1,27 @@
-import { fetchLocalized } from "@/utils/constants";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shipping Guides | MGC Freight",
+  description: "Access step-by-step resources, tools, and guides for hassle-free shipping and logistics planning.",
+  keywords: ["shipping guides", "logistics resources", "MGC Freight guides", "transportation tips", "freight planning", "shipping checklist", "carrier selection", "supply chain management", "international shipping", "domestic shipping"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Shipping Guides | MGC Freight",
+    description: "Access step-by-step resources, tools, and guides for hassle-free shipping and logistics planning.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shipping Guides | MGC Freight",
+    description: "Access step-by-step resources, tools, and guides for hassle-free shipping and logistics planning.",
+  },
+};
+
+import { client } from "@/utils/constants";
 import GuideToBook from "@/components/page-components/guide-to-book";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
@@ -24,7 +47,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function ShippingGuides() {
 
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='shipping-guides'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -97,18 +120,17 @@ export default async function ShippingGuides() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Resources","Shipping Guides"]}
+                  breadCrumb={["Resources", "Shipping Guides"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

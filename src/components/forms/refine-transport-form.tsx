@@ -130,7 +130,7 @@ export default function RefineTransportForm() {
           name="registrationNumber"
           rules={{ required: "Registration Number is required" }}
           control={control}
-          label="MC / DOT / CVOR / Registration Number"
+          label="MC / DOT / CVOR / Reg. Number"
           labelPlacement="outside"
           placeholder="# 000000"
         />

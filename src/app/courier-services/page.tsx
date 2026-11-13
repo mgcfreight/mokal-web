@@ -1,3 +1,27 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Courier Services Canada & USA | Same-Day & Next-Day Delivery | MGC Freight",
+  description: "Fast and reliable courier services across Canada and the US. Compare courier rates from top carriers, book same-day or next-day delivery with real-time tracking.",
+  keywords: ["courier services", "package delivery", "MGC Freight", "express delivery", "local courier", "shipping services", "package tracking", "reliable courier", "fast delivery"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Courier Services Canada & USA | Same-Day & Next-Day Delivery | MGC Freight",
+    description: "Fast and reliable courier services across Canada and the US. Compare courier rates from top carriers, book same-day or next-day delivery with real-time tracking.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Courier Services Canada & USA | Same-Day & Next-Day Delivery | MGC Freight",
+    description: "Fast and reliable courier services across Canada and the US. Compare courier rates from top carriers, book same-day or next-day delivery with real-time tracking.",
+  },
+};
+
 // import BaseButton from "@/components/common/base-button";
 // import LinearGradientText from "@/components/common/linear-gradient-text";
 // import Image from "next/image";
@@ -11,7 +35,7 @@ import GuideToBook from "@/components/page-components/guide-to-book";
 // import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 // import Link from "next/link";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -32,9 +56,11 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function CourierServices() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='courier'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -99,26 +125,39 @@ export default async function CourierServices() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("Courier & Package Delivery Services", "Fast, reliable, and secure courier services. Get local and expedited package delivery with real-time tracking.", "https://www.mgcfreight.com/courier-services", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Courier Services"]}
+                  breadCrumb={["Services", "Courier Services"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

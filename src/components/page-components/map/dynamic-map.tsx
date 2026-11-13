@@ -22,7 +22,7 @@ declare module 'leaflet' {
 //     { name: "Brazil", coords: [-14.235004,-51.925282], iconUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/flags/flag-3.svg` }
 // ];
 
-type locations={name:string,coords:number[],iconUrl:string}[]
+type locations = { name: { en: string, fr: string }, coords: number[], iconUrl: string }[]
 
 const center: L.LatLngTuple = [20, 0];
 
@@ -37,7 +37,7 @@ const CurveConnection = ({ start, end }: { start: L.LatLngTuple; end: L.LatLngTu
 
   useEffect(() => {
     const control = getControlPoint(start, end);
-    
+
     const curvedLine = L.curve(
       [
         'M', start,
@@ -62,46 +62,46 @@ const CurveConnection = ({ start, end }: { start: L.LatLngTuple; end: L.LatLngTu
 
 
 
-export default function DynamicMap({data}:{data:locations}) {
-    return (
-        <MapContainer
-            center={center}
-            zoom={2}
-            className="!h-[35rem]"
-            zoomControl={false}
-        >
-            <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-                attribution='&copy; OpenStreetMap contributors'
-            />
+export default function DynamicMap({ data }: { data: locations }) {
+  return (
+    <MapContainer
+      center={center}
+      zoom={2}
+      className="!h-[35rem]"
+      zoomControl={false}
+    >
+      <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+        attribution='&copy; OpenStreetMap contributors'
+      />
 
-            <Marker position={center} icon={new L.Icon({
-                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41]
-            })}>
-                {/* <Popup>Center Point</Popup> */}
-            </Marker>
+      <Marker position={center} icon={new L.Icon({
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+      })}>
+        {/* <Popup>Center Point</Popup> */}
+      </Marker>
 
-            {data.map((location, index) => (
-                <div key={index}>
-                    <Marker
-                        position={location.coords as LatLngExpression}
-                        icon={new L.Icon({
-                            iconUrl: location.iconUrl,
-                            iconSize: [50, 50],
-                            iconAnchor: [25, 50]
-                        })}
-                    >
-                        {/* <Popup>{location.name}</Popup> */}
-                    </Marker>
+      {data.map((location, index) => (
+        <div key={index}>
+          <Marker
+            position={location.coords as LatLngExpression}
+            icon={new L.Icon({
+              iconUrl: location.iconUrl,
+              iconSize: [50, 50],
+              iconAnchor: [25, 50]
+            })}
+          >
+            {/* <Popup>{location.name}</Popup> */}
+          </Marker>
 
-                    <CurveConnection 
-                        start={location.coords as L.LatLngTuple}
-                        end={center}
-                    />
-                </div>
-            ))}
-        </MapContainer>
-    )
+          <CurveConnection
+            start={location.coords as L.LatLngTuple}
+            end={center}
+          />
+        </div>
+      ))}
+    </MapContainer>
+  )
 }

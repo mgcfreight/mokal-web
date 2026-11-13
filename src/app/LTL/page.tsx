@@ -1,3 +1,27 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "LTL Shipping Services in Ontario & Canada | Less-Than-Truckload Freight | MGC Freight",
+  description: "MGC Freight offers cost-effective LTL (less-than-truckload) shipping services across Canada and the US. Serving Ontario and all of North America.",
+  keywords: ["LTL shipping", "less than truckload", "freight LTL", "MGC Freight", "LTL carrier", "shipping LTL", "cost-effective", "cargo optimization"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "LTL Shipping Services in Ontario & Canada | Less-Than-Truckload Freight | MGC Freight",
+    description: "MGC Freight offers cost-effective LTL (less-than-truckload) shipping services across Canada and the US. Serving Ontario and all of North America.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LTL Shipping Services in Ontario & Canada | Less-Than-Truckload Freight | MGC Freight",
+    description: "MGC Freight offers cost-effective LTL (less-than-truckload) shipping services across Canada and the US. Serving Ontario and all of North America.",
+  },
+};
+
 import GuideToBook from "@/components/page-components/guide-to-book";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
@@ -9,7 +33,7 @@ import CardsContent from "@/components/page-components/cards-content";
 import MainBlog from "@/components/page-components/main-blog";
 import Testimonials from "@/components/page-components/testimonials";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Content2 from "@/components/page-components/content2";
 import GrowYourBusiness from "@/components/page-components/grow-your-business";
 import SingleSlider from "@/components/page-components/single-slider";
@@ -22,11 +46,15 @@ import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
+import { getLocale } from "@/utils/locale-server";
+
 export default async function LTL() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='LTL'][0]{
                                                           "content":[...contentBlocks[]->{
-
+ 
                                                             ...,
                                                             
                                                             "singleSlider":[...slider[]{...,"cards":[...cards[]{
@@ -88,26 +116,39 @@ export default async function LTL() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("Less Than Truckload (LTL) Shipping", "Cost-effective LTL freight shipping. Optimize your smaller cargo shipments with our premium carrier network.", "https://www.mgcfreight.com/LTL", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Less Than Truckload(LTL)"]}
+                  breadCrumb={["Services", "Less Than Truckload(LTL)"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

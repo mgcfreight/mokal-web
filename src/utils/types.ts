@@ -43,24 +43,24 @@ export interface MegaMenuProps {
 
 export type TabItemProp = [
   {
-    header?: [{ Value: string; Highlight: boolean }];
+    header?: [{ Value: { en: string; fr: string }; Highlight: boolean }];
     imageUrl?: string;
     buttons?: [
-      { withBackground: boolean; url: { current: string }; text: string }
+      { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
     ];
-    name: string;
-    description?: string;
-    cards: [{ imageUrl: string; description: string }];
+    name: { en: string; fr: string } | string;
+    description?: { en: string; fr: string };
+    cards: [{ imageUrl: string; description: { en: string; fr: string } }];
     slider: [
       {
-        header: [{ Value: string; Highlight: boolean }];
+        header: [{ Value: { en: string; fr: string }; Highlight: boolean }];
         imageUrl: string;
         buttons: [
-          { withBackground: boolean; url: { current: string }; text: string }
+          { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
         ];
-        name: string;
-        description: string;
-        cards: [{ imageUrl: string; description: string }];
+        name: { en: string; fr: string };
+        description: { en: string; fr: string };
+        cards: [{ imageUrl: string; description: { en: string; fr: string } }];
         content: any;
       }
     ];
@@ -75,22 +75,22 @@ export interface TabsProps {
 
 export interface TabNoSliderProps {
   title: ReactNode;
-  description?: string[];
+  description?: { en: string; fr: string }[];
   buttons?: [
-    { withBackground: boolean; url: { current: string }; text: string }
+    { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
   ];
   content?: any;
 }
 
-type CarouselData = { imageSrc: string; description: string }[];
+type CarouselData = { imageSrc: string; description: { en: string; fr: string } }[];
 
 export interface TabWithSliderProps {
   title: ReactNode;
-  description: string[];
+  description: { en: string; fr: string }[];
   carousel: CarouselData;
   hideButton?: boolean;
   buttons?: [
-    { withBackground: boolean; url: { current: string }; text: string }
+    { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
   ];
   content?: any;
 }
@@ -117,7 +117,7 @@ export interface BaseFileProps extends InputProps {
   >;
 }
 
-export type LinearGradientTextProp = { text: string; extraClass?: string };
+export type LinearGradientTextProp = { text: { en: string; fr: string }; extraClass?: string };
 
 export interface BaseCheckboxProps extends CheckboxProps {
   anything?: string;
@@ -141,7 +141,7 @@ export interface HearFromUsAndBlogsProps {
 }
 
 export type countriesType = {
-  name: string;
+  name: { en: string; fr: string };
   coords: number[];
   iconUrl: string;
 }[];
@@ -151,18 +151,18 @@ export interface configData {
   phoneNumber: string;
   countries?: countriesType;
   imageUrl: string;
-  copyright: string;
+  copyright: { en: string; fr: string };
   address: { lat: number; lng: number };
   email: string;
   prod: boolean;
 }
 
 export interface HeaderAndCards {
-  header: { Highlight?: boolean; Value: string }[];
+  header: { Highlight?: boolean; Value: { en: string; fr: string } }[];
   cards: {
     imageUrl: string;
-    heading: string;
-    description: string;
+    heading: { en: string; fr: string };
+    description: { en: string; fr: string };
   }[];
 }
 
@@ -171,7 +171,7 @@ export type IndvidualBlog = {
   imageUrl: string;
   authorName: string;
   authorImg: string;
-  title: string;
+  title: { en: string, fr: string };
   content: [{ text: string }][];
   publishedAt: string;
 };
@@ -179,32 +179,32 @@ export type IndvidualBlog = {
 export type Blogs = IndvidualBlog[];
 
 export interface FAQS {
-  header: { Highlight: boolean; Value: string }[];
-  questions: { answer: string; question: string }[];
-  description: string;
+  header: { Highlight: boolean; Value: { en: string; fr: string } }[];
+  questions: { answer: { en: string; fr: string }; question: { en: string; fr: string } }[];
+  description: { en: string; fr: string };
 }
 
 export interface PagesContent {
   _id: string;
   slider: [
     {
-      header?: [{ Value: string; Highlight: boolean }];
+      header?: [{ Value: { en: string; fr: string }; Highlight: boolean }];
       imageUrl?: string;
       buttons?: [
-        { withBackground: boolean; url: { current: string }; text: string }
+        { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
       ];
-      name: string;
-      description?: string;
+      name: { en: string; fr: string };
+      description?: { en: string; fr: string };
       slider: [
         {
-          header?: [{ Value: string; Highlight: boolean }];
+          header?: [{ Value: { en: string; fr: string }; Highlight: boolean }];
           imageUrl?: string;
           buttons?: [
-            { withBackground: boolean; url: { current: string }; text: string }
+            { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
           ];
-          name: string;
-          description?: string;
-          cards: [{ imageUrl: string; description: string }];
+          name: { en: string; fr: string };
+          description?: { en: string; fr: string };
+          cards: [{ imageUrl: string; description: { en: string; fr: string } }];
         }
       ];
     }
@@ -213,18 +213,18 @@ export interface PagesContent {
   cards: [] | [any];
   imageUrl?: string;
   buttons?: [any];
-  title?: string;
+  title?: { en: string; fr: string };
   _type: string;
   content?: [] | [any];
   _updatedAt: string;
-  description?: string;
+  description?: { en: string; fr: string };
   _createdAt?: string;
   header?: [any];
   _rev: string;
-  questions?: [{ answer: string; question: string }];
+  questions?: [{ answer: { en: string; fr: string }; question: { en: string; fr: string } }];
   variation?: number;
   blogs?: [
-    { _id: string; title: string; _createdAt: string; imageUrl: string }
+    { _id: string; title: { en: string; fr: string }; _createdAt: string; imageUrl: string }
   ];
   testimonials?: [
     {
@@ -232,7 +232,7 @@ export interface PagesContent {
       name: string;
       _createdAt: string;
       imageUrl: string;
-      description: string;
+      description: { en: string; fr: string };
       rating: number;
     }
   ];
@@ -240,13 +240,13 @@ export interface PagesContent {
   images: [{ imageUrl: string }];
   singleSlider: [
     {
-      header?: [{ Value: string; Highlight: boolean }];
+      header?: [{ Value: { en: string; fr: string }; Highlight: boolean }];
       imageUrl?: string;
       buttons?: [
-        { withBackground: boolean; url: { current: string }; text: string }
+        { withBackground: boolean; url: { current: string }; text: { en: string; fr: string } }
       ];
-      description?: string;
-      cards: [{ imageUrl: string; description: string }];
+      description?: { en: string; fr: string };
+      cards: [{ imageUrl: string; description: { en: string; fr: string } }];
     }
   ];
 }

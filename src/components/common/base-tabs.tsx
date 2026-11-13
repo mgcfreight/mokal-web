@@ -7,6 +7,7 @@ import LinearGradientText from "./linear-gradient-text";
 import TabNoSlider from "./tabs/tab-no-slider";
 import Image from "next/image";
 import BaseButton from "./base-button";
+import { useLocale, useTranslate } from "@/providers/locale-provider";
 
 function Title(
   title: string,
@@ -173,22 +174,21 @@ function Title(
 
 export default function BaseTabs({ keys, variation }: TabsProps) {
   const [key, setKey] = useState<number>(0);
-
-
+  const t = useTranslate();
+  const locale = useLocale();
   return (
     <>
       <div className="flex sm:hidden flex-wrap gap-4">
-        {keys.map((e, index) => (
+        {keys?.map((e, index) => (
           <BaseButton
             onClick={() => setKey(index)}
-            extraClass={`min-w-[13rem] flex-1 ${
-              index == key
-                ? "!bg-base-buttonTab text-base-blue"
-                : "!bg-gray-200 text-base-gray"
-            }`}
-            key={e.name}
+            extraClass={`min-w-[13rem] flex-1 ${index == key
+              ? "!bg-base-buttonTab text-base-blue"
+              : "!bg-gray-200 text-base-gray"
+              }`}
+            key={t(e.name)}
           >
-            {e.name}
+            {t(e.name)}
           </BaseButton>
         ))}
       </div>
@@ -197,32 +197,32 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
           {/* {e.component} */}
           {keys[key].slider[0].cards.length > 0 && variation == 1 && (
             <TabWithSlider
-              buttons={keys[key].slider[0].buttons}
+              buttons={keys[key].slider[0]?.buttons ?? []}
               title={
-                <h1 className="sm:!text-3xl text-lg font-bold">
+                <h3 className="sm:!text-3xl text-lg font-bold">
                   {keys[key].slider[0].header?.map((e) => {
                     if (e.Highlight) {
                       return (
                         <LinearGradientText
                           extraClass="mr-2"
-                          key={e.Value}
-                          text={e.Value}
+                          key={t(e.Value)}
+                          text={t(e.Value)}
                         />
                       );
                     }
                     return (
-                      <span className="mr-2" key={e.Value}>
-                        {e.Value}
+                      <span className="mr-2" key={t(e.Value)}>
+                        {t(e.Value)}
                       </span>
                     );
                   })}
-                </h1>
+                </h3>
               }
-              content={keys[key].slider[0].content}
-              description={[keys[key].slider[0].description!]}
+              content={keys[key].slider[0]?.content?.[locale]}
+              description={[t(keys[key].slider[0].description!)]}
               carousel={keys[key].slider[0].cards.map((e) => ({
                 imageSrc: e.imageUrl,
-                description: e.description,
+                description: t(e.description!),
               }))}
             />
           )}
@@ -232,27 +232,27 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
               <TabNoSlider
                 buttons={keys[key].slider[0].buttons}
                 title={
-                  <h1 className="sm:!text-3xl text-lg font-bold">
+                  <h3 className="sm:!text-3xl text-lg font-bold">
                     {keys[key].slider[0].header?.map((e) => {
                       if (e.Highlight) {
                         return (
                           <LinearGradientText
                             extraClass="mr-2"
-                            key={e.Value}
-                            text={e.Value}
+                            key={t(e.Value)}
+                            text={t(e.Value)}
                           />
                         );
                       }
                       return (
-                        <span className="mr-2" key={e.Value}>
-                          {e.Value}
+                        <span className="mr-2" key={t(e.Value)}>
+                          {t(e.Value)}
                         </span>
                       );
                     })}
-                  </h1>
+                  </h3>
                 }
-                content={keys[key].slider[0].content}
-                description={[keys[key].slider[0].description!]}
+                content={keys[key].slider[0].content?.[locale] ?? keys[key].slider[0].content}
+                description={[t(keys[key].slider[0].description!)]}
               />
             )}
 
@@ -279,13 +279,10 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
                     key={i.slider[0].imageUrl}
                     src={i.slider[0].imageUrl!}
                     alt="platform"
-                    className={`h-full w-[50%] ${
-                      index == 1 && "rotate-[4deg]"
-                    }  ${
-                      index == 0 && "rotate-[-4deg]"
-                    } flex-1 object-cover relative z-20 ${
-                      index == array.length - 1 && "!absolute left-[25%] z-0"
-                    }  `}
+                    className={`h-full w-[50%] ${index == 1 && "rotate-[4deg]"
+                      }  ${index == 0 && "rotate-[-4deg]"
+                      } flex-1 object-cover relative z-20 ${index == array.length - 1 && "!absolute left-[25%] z-0"
+                      }  `}
                     width={500}
                     height={1000}
                   />
@@ -325,7 +322,7 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
           <Tab
             className="sm:block hidden"
             key={index}
-            title={Title(e.name, index, key, keys.length - 1)}
+            title={Title(t(e.name), index, key, keys.length - 1)}
           >
             {/* {e.component} */}
             {e.slider[0].cards.length > 0 && variation == 1 && (
@@ -333,31 +330,31 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
                 buttons={e.slider[0].buttons}
                 title={
                   e.slider[0].header && (
-                    <h1 className="sm:!text-3xl text-lg font-bold">
+                    <h3 className="sm:!text-3xl text-lg font-bold">
                       {e.slider[0].header?.map((e) => {
                         if (e.Highlight) {
                           return (
                             <LinearGradientText
                               extraClass="mr-2"
-                              key={e.Value}
+                              key={t(e.Value)}
                               text={e.Value}
                             />
                           );
                         }
                         return (
-                          <span className="mr-2" key={e.Value}>
-                            {e.Value}
+                          <span className="mr-2" key={t(e.Value)}>
+                            {t(e.Value)}
                           </span>
                         );
                       })}
-                    </h1>
+                    </h3>
                   )
                 }
-                description={[e.slider[0].description!]}
-                content={keys[key].slider[0].content}
+                description={[t(e.slider[0].description!)]}
+                content={e.slider[0].content?.[locale] ?? e.slider[0].content}
                 carousel={e.slider[0].cards.map((e) => ({
                   imageSrc: e.imageUrl,
-                  description: e.description,
+                  description: t(e.description!),
                 }))}
               />
             )}
@@ -366,30 +363,30 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
               !e.slider[0].cards.length && (
                 <TabNoSlider
                   buttons={e.slider[0].buttons}
-                  content={keys[key].slider[0].content}
+                  content={e.slider[0].content?.[locale] ?? e.slider[0].content}
                   title={
                     e.slider[0].header && (
-                      <h1 className="sm:!text-3xl text-lg font-bold">
+                      <h3 className="sm:!text-3xl text-lg font-bold">
                         {e.slider[0].header?.map((e) => {
                           if (e.Highlight) {
                             return (
                               <LinearGradientText
                                 extraClass="mr-2"
-                                key={e.Value}
+                                key={t(e.Value)}
                                 text={e.Value}
                               />
                             );
                           }
                           return (
-                            <span className="mr-2" key={e.Value}>
-                              {e.Value}
+                            <span className="mr-2" key={t(e.Value)}>
+                              {t(e.Value)}
                             </span>
                           );
                         })}
-                      </h1>
+                      </h3>
                     )
                   }
-                  description={[e.slider[0].description!]}
+                  description={[t(e.slider[0].description!)]}
                 />
               )}
 
@@ -414,13 +411,10 @@ export default function BaseTabs({ keys, variation }: TabsProps) {
                       key={i.slider[0].imageUrl}
                       src={i.slider[0].imageUrl!}
                       alt="platform"
-                      className={`h-full w-[50%] ${
-                        index == 1 && "rotate-[4deg]"
-                      }  ${
-                        index == 0 && "rotate-[-4deg]"
-                      } flex-1 object-cover relative z-20 ${
-                        index == array.length - 1 && "!absolute left-[25%] z-0"
-                      }  `}
+                      className={`h-full w-[50%] ${index == 1 && "rotate-[4deg]"
+                        }  ${index == 0 && "rotate-[-4deg]"
+                        } flex-1 object-cover relative z-20 ${index == array.length - 1 && "!absolute left-[25%] z-0"
+                        }  `}
                       width={500}
                       height={1000}
                     />

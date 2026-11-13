@@ -33,7 +33,7 @@ export default function TrackShipment({
 }) {
   const { id } = use(searchParams!);
   const { control, setValue, handleSubmit } = useForm();
-  
+
 
   const { mutate, isPending: isLoading, data } = useMutation({
     mutationFn: (data: string) =>
@@ -47,7 +47,6 @@ export default function TrackShipment({
     } = dataa;
     if (!data) {
     }
-    console.log(data);
   }
 
   function submit(e: FieldValues) {
@@ -132,35 +131,33 @@ export default function TrackShipment({
                     {/* 52 */}
                     {/* 15 */}
                     <hr
-                      className={`flex-[0_0_${
-                        data.data.data.tracking.trackingDetail.trackingStatus ==
-                        4
+                      className={`flex-[0_0_${data.data.data.tracking.trackingDetail.trackingStatus ==
+                          4
                           ? 0
                           : data.data.data.tracking.trackingDetail
-                              .trackingStatus == 5
-                          ? 33
-                          : data.data.data.tracking.trackingDetail
+                            .trackingStatus == 5
+                            ? 33
+                            : data.data.data.tracking.trackingDetail
                               .trackingStatus == 8
-                          ? 68
-                          : data.data.data.tracking.trackingDetail
-                              .trackingStatus == 6
-                          ? 100
-                          : 0
-                      }%] border-solid border-[0.45rem] border-b-0 border-base-blue rounded-full`}
+                              ? 68
+                              : data.data.data.tracking.trackingDetail
+                                .trackingStatus == 6
+                                ? 100
+                                : 0
+                        }%] border-solid border-[0.45rem] border-b-0 border-base-blue rounded-full`}
                     />
                     <hr className="flex-1 border-dotted bg-gray-100 border-b-0 border-[0.45rem] border-gray-200 rounded-full" />
                     {trackingItems.map((e) => (
                       <div
                         key={e.name}
-                        className={`flex flex-col -top-2 ${
-                          e.value == 4
+                        className={`flex flex-col -top-2 ${e.value == 4
                             ? "-left-2"
                             : e.value == 5
-                            ? "left-1/3"
-                            : e.value == 8
-                            ? "left-[68%]"
-                            : "right-0 items-end"
-                        }  absolute`}
+                              ? "left-1/3"
+                              : e.value == 8
+                                ? "left-[68%]"
+                                : "right-0 items-end"
+                          }  absolute`}
                       >
                         {e.value == data.data.data.tracking.trackingDetail && (
                           <FaCheck className="bg-green-500 text-white rounded-full p-2 text-[1.8rem]" />

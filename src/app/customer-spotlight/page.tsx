@@ -1,3 +1,26 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Customer Spotlight | MGC Freight",
+  description: "Discover our client success stories and see how we help businesses optimize their logistics, reduce shipping costs, and scale.",
+  keywords: ["customer spotlight", "client success stories", "case studies", "logistics optimization", "shipping savings", "MGC Freight", "transportation case studies", "freight success", "supply chain optimization"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Customer Spotlight | MGC Freight",
+    description: "Discover our client success stories and see how we help businesses optimize their logistics, reduce shipping costs, and scale.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Customer Spotlight | MGC Freight",
+    description: "Discover our client success stories and see how we help businesses optimize their logistics, reduce shipping costs, and scale.",
+  },
+};
+
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -14,7 +37,7 @@ import SingleSlider from "@/components/page-components/single-slider";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import BookADemoForm from "@/components/forms/book-a-demo";
 import ReactOut from "@/components/forms/broker-partner-form";
 import TrackShipment from "@/components/page-components/track-shipment";
@@ -23,7 +46,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function CustomerSpotlight() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='customer-spotlight'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -96,18 +119,17 @@ export default async function CustomerSpotlight() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["About Us","Customer Spotlight"]}
+                  breadCrumb={["About Us", "Customer Spotlight"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

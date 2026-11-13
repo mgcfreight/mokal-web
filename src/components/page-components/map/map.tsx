@@ -1,11 +1,11 @@
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import { configData } from "@/utils/types";
 import CustomMap from "./custom-map";
 
 export default async function Map() {
 
-    const data :Omit<configData,'email'|'copyright'|'imageUrl'|'address'|'phoneNumber'|'socialLinks'>= await fetchLocalized({
-        query: `*[_type=='config'][0]{
+  const data: Omit<configData, 'email' | 'copyright' | 'imageUrl' | 'address' | 'phoneNumber' | 'socialLinks'> = await client.fetch({
+    query: `*[_type=='config'][0]{
   
   "countries":[...countries[]{
     name,
@@ -13,10 +13,10 @@ export default async function Map() {
       "coords":[points.lat,points.lng]
   }]
 }`, config: {
-            cache: 'no-cache'
-        }
-    })
+      cache: 'no-cache'
+    }
+  })
 
-    return <CustomMap data={data.countries!}/>
+  return <CustomMap data={data.countries!} />
 
 }

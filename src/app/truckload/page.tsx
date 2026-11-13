@@ -1,5 +1,29 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Truckload Freight Shipping | MGC Freight",
+  description: "Reliable and secure truckload freight shipping. Access full capacity (FTL) solutions for large-scale shipments across North America.",
+  keywords: ["truckload freight", "FTL shipping", "full truckload", "freight broker", "LTL", "North America shipping", "MGC Freight"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Truckload Freight Shipping | MGC Freight",
+    description: "Reliable FTL shipping across North America with MGC Freight. Get competitive rates and guaranteed capacity.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Truckload Freight Shipping | MGC Freight",
+    description: "Full truckload shipping made simple. MGC Freight delivers reliable FTL solutions.",
+  },
+};
+
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -21,9 +45,12 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function Truckload() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='truckload'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -88,27 +115,40 @@ export default async function Truckload() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("Truckload Freight Shipping", "Reliable and secure truckload freight shipping. Access full capacity (FTL) solutions for large-scale shipments across North America.", "https://www.mgcfreight.com/truckload", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Truckload"]}
+                  breadCrumb={["Services", "Truckload"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

@@ -1,8 +1,32 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | MGC Freight",
+  description: "Read MGC Freight's privacy policy to understand how we protect and manage your personal data and shipping details.",
+  keywords: ["privacy policy", "MGC Freight privacy", "data protection", "shipping data", "personal information", "terms and conditions", "privacy practices"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Privacy Policy | MGC Freight",
+    description: "Read MGC Freight's privacy policy to understand how we protect and manage your personal data and shipping details.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | MGC Freight",
+    description: "Read MGC Freight's privacy policy to understand how we protect and manage your personal data and shipping details.",
+  },
+};
+
 import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 import LinearGradientText from "@/components/common/linear-gradient-text";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import { PagesContent } from "@/utils/types";
 import { PortableText } from "@portabletext/react";
+import { getLocale } from "@/utils/locale-server";
 
 const components = {
   // types: {
@@ -36,9 +60,9 @@ const components = {
   block: {
     // Ex. 1: customizing common block types
     h1: ({ children }: any) => (
-      <h1 className="text-2xl mt-5 font-semibold">{children}</h1>
+      <div className="text-2xl mt-5 font-semibold">{children}</div>
     ),
-    normal: ({ children }: any) => <h1 className=" mt-2 ">{children}</h1>,
+    normal: ({ children }: any) => <div className=" mt-2 ">{children}</div>,
 
     blockquote: ({ children }: any) => (
       <blockquote className="border-l-purple-500">{children}</blockquote>
@@ -69,7 +93,7 @@ const components = {
 
 export default async function PrivacyPolicy() {
   const homeData: { content: [PagesContent]; remaining: any } =
-    await fetchLocalized({
+    await client.fetch({
       query: `*[_type=='privacypolicy'][0]{
   "content":[...contentBlocks[]->{
     ...,
@@ -125,8 +149,7 @@ export default async function PrivacyPolicy() {
       "remaining":{...}
     }`,
     });
-
-  console.log("priacyyy", homeData.remaining);
+  const locale = await getLocale();
 
   return (
     <>
@@ -136,9 +159,9 @@ export default async function PrivacyPolicy() {
             className={`flex flex-col items-center m-auto sm:px-8 px-4 py-4 sm:w-1/2  text-center gap-4`}
           >
             <div className="flex flex-col ">
-              <h1 className="sm:text-[3rem] text-[1.8rem] font-bold">
-                <LinearGradientText text="Privacy Policy" />{" "}
-              </h1>
+              <div className="sm:text-[3rem] text-[1.8rem] font-bold">
+                <LinearGradientText text={{ en: "Privacy Policy", fr: "Politique de confidentialité" }} />{" "}
+              </div>
             </div>
             <BaseBreadCrumb items={["Privacy Policy"]} />
           </div>
@@ -154,7 +177,7 @@ export default async function PrivacyPolicy() {
             </p>
             {/* <div dangerouslySetInnerHTML={{__html:toHTML(homeData.remaining.content)}}/> */}
             <PortableText
-              value={homeData.remaining.content}
+              value={homeData.remaining.content[locale]}
               components={components}
             />
 

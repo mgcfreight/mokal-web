@@ -1,5 +1,29 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Careers at MGC Freight | Join Our Team",
+  description: "Explore job opportunities and career paths at MGC Freight. Join a fast-growing logistics company focused on innovation.",
+
+  keywords: ["careers MGC Freight", "trucking jobs", "freight broker careers", "MGC Freight jobs", "office careers"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Careers at MGC Freight | Join Our Team",
+    description: "Discover exciting career opportunities in the logistics industry.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Careers | MGC Freight",
+    description: "Join our growing logistics team.",
+  },
+};
+
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
 import Title from "@/components/page-components/title";
@@ -23,7 +47,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function Careers() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='career'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -96,18 +120,17 @@ export default async function Careers() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["About Us","Careers"]}
+                  breadCrumb={["About Us", "Careers"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

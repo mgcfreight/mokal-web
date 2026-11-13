@@ -1,4 +1,44 @@
-import { fetchLocalized } from "@/utils/constants";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "MGC Freight | Canada & USA Intelligent Freight Platform",
+  description: "MGC Freight offers reliable LTL, FTL, courier, and cross-border shipping across Canada and the US. Get your free freight quote from our Ontario experts today.",
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  keywords: ["freight shipping", "logistics company", "MGC Freight", "cargo shipping", "supply chain management", "freight broker", "transportation services", "shipping solutions", "truckload shipping", "LTL shipping"],
+  openGraph: {
+    title: "MGC Freight | Canada & USA Intelligent Freight Platform",
+    description: "MGC Freight offers reliable LTL, FTL, courier, and cross-border shipping across Canada and the US. Get your free freight quote from our Ontario experts today.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/logo-white.svg`,
+        width: 165,
+        height: 36,
+        alt: 'MGC Freight Digital Supply Chain Management Platform',
+      },
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MGC Freight | Canada & USA Intelligent Freight Platform",
+    description: "MGC Freight offers reliable LTL, FTL, courier, and cross-border shipping across Canada and the US. Get your free freight quote from our Ontario experts today.",
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/logo-white.svg`,
+        width: 165,
+        height: 36,
+        alt: 'MGC Freight Digital Supply Chain Management Platform',
+      },
+    ],
+  },
+};
+
+import { client } from "@/utils/constants";
 import CustomerBase from "@/components/page-components/customer-base";
 import { PagesContent } from "@/utils/types";
 import FAQSs from "@/components/page-components/faqs";
@@ -21,96 +61,132 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
+import { getOrganizationSchema, getFAQSchema } from "@/utils/schema";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function Home() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
-    query: `*[_type=='home'][0]{
-                                                          "content":[...contentBlocks[]->{
+  const lang = await getLocale();
 
-                                                            ...,
-                                                            
-                                                            "singleSlider":[...slider[]{...,"cards":[...cards[]{
-                                          ...,
-                                          "imageUrl":imageUrl.asset->url
-                                        }]}],
-                                                            "images":[...images[]{...,"imageUrl":imageUrl.asset->url}],
-                                                            "video":video.asset->url,
-                                                             "testimonials":[...testimonials[]->{
-                                                               ...,
-                                                               "imageUrl":image.asset->url
-                                                              }],
-                                                             "blogs":[...blogs[]->{
-                                                               ...,
-                                                               "Author":Author.authorName,
-  "AuthorImage":Author.authorImage.asset->url,
-                                                               "imageUrl":image.asset->url
-                                                              }],
-                                                            "imageUrl":imageUrl.asset->url,
-                                                            "slider":[...slider[]->{
+  const [homeData, configData] = await Promise.all([
+    client.fetch<{ content: [PagesContent] }>({
+      query: `*[_type=='home'][0]{
+                                                            "content":[...contentBlocks[]->{
+  
                                                               ...,
+                                                              
+                                                              "singleSlider":[...slider[]{...,"cards":[...cards[]{
+                                            ...,
+                                            "imageUrl":imageUrl.asset->url
+                                          }]}],
+                                                              "images":[...images[]{...,"imageUrl":imageUrl.asset->url}],
+                                                              "video":video.asset->url,
+                                                               "testimonials":[...testimonials[]->{
+                                                                 ...,
+                                                                 "imageUrl":image.asset->url
+                                                                }],
+                                                               "blogs":[...blogs[]->{
+                                                                 ...,
+                                                                 "Author":Author.authorName,
+    "AuthorImage":Author.authorImage.asset->url,
+                                                                 "imageUrl":image.asset->url
+                                                                }],
                                                               "imageUrl":imageUrl.asset->url,
-                                                              "cards":[...cards[]->{
-                                                                ...,
-                                                                "imageUrl":imageUrl.asset->url
-                                                              }],
-                                                        
-                                                              "slider":[...slider[]{
+                                                              "slider":[...slider[]->{
                                                                 ...,
                                                                 "imageUrl":imageUrl.asset->url,
-                                                                "cards":[...cards[]{
+                                                                "cards":[...cards[]->{
                                                                   ...,
                                                                   "imageUrl":imageUrl.asset->url
-                                                                  
-                                                                }]}
-                                                                       ]
-                                                        
-                                                              
-                                                            }],
-                                                            "cards":[...cards[]{
-                                                              ...,
-                                                              "imageUrl":icon.asset->url
-                                                            }],
-                                                            "content":[...content[]{
-                                                              ...,
-                                                              "description":[...description[]{
-                                                                ...,
-                                                                "imageUrl":imageUrl.asset->url
+                                                                }],
+                                                          
+                                                                "slider":[...slider[]{
+                                                                  ...,
+                                                                  "imageUrl":imageUrl.asset->url,
+                                                                  "cards":[...cards[]{
+                                                                    ...,
+                                                                    "imageUrl":imageUrl.asset->url
+                                                                    
+                                                                  }]}
+                                                                         ]
+                                                          
+                                                                
                                                               }],
-                                                              "imageUrl":asset->url,
-                                                              "arrayContent":[...arrayContent[]{
+                                                              "cards":[...cards[]{
                                                                 ...,
-                                                                "imageUrl":imageUrl.asset->url
+                                                                "imageUrl":icon.asset->url
+                                                              }],
+                                                              "content":[...content[]{
+                                                                ...,
+                                                                "description":[...description[]{
+                                                                  ...,
+                                                                  "imageUrl":imageUrl.asset->url
+                                                                }],
+                                                                "imageUrl":asset->url,
+                                                                "arrayContent":[...arrayContent[]{
+                                                                  ...,
+                                                                  "imageUrl":imageUrl.asset->url
+                                                                }]
                                                               }]
-                                                            }]
-                                                            }
-                                                            ],
-                                                              "remaining":{...}
-                                                            }`,
-  });
+                                                              }
+                                                              ],
+                                                                "remaining":{...}
+                                                              }`,
+      config: {
+        cache: "no-store",
+      },
+    }),
+    client.fetch<any>({
+      query: `*[_type == 'config'][0]{
+        email,
+        phoneNumber,
+        socialLinks,
+        "imageUrl": logo.asset->url
+      }`,
+      config: {
+        cache: "no-store",
+      },
+    }),
+  ]);
+
   const { content } = homeData;
+  // console.log(content)
+  const orgSchema = getOrganizationSchema(configData);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions
+    ? getFAQSchema(faqBlock.questions, lang)
+    : null;
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   header={e.header!}
-                  title={e.title}
+                  title={e?.title}
                   buttons={e.buttons}
                   imageUrl={e.imageUrl}
-                  description={e.description}
+                  description={e?.description}
                 />
               )}
               {e._type == "tabs" && (

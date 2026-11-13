@@ -1,6 +1,30 @@
+import { getServiceSchema, getFAQSchema } from "@/utils/schema";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Freight Forwarding Services Ontario & Canada | Global Logistics | MGC Freight",
+  description: "MGC Freight offers reliable freight forwarding services from Ontario and across Canada. Manage global supply chain with competitive rates.",
+  keywords: ["freight forwarding", "global logistics", "MGC Freight", "international shipping", "freight broker", "cross-border logistics", "supply chain management", "ocean freight", "air freight", "shipping services"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Freight Forwarding Services Ontario & Canada | Global Logistics | MGC Freight",
+    description: "MGC Freight offers reliable freight forwarding services from Ontario and across Canada. Manage global supply chain with competitive rates.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Freight Forwarding Services Ontario & Canada | Global Logistics | MGC Freight",
+    description: "MGC Freight offers reliable freight forwarding services from Ontario and across Canada. Manage global supply chain with competitive rates.",
+  },
+};
+
 import GrowYourBusiness from "@/components/page-components/grow-your-business";
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -21,9 +45,11 @@ import TrackShipment from "@/components/page-components/track-shipment";
 import GetAQuoteForm from "@/components/page-components/get-a-quote";
 import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
+import { getLocale } from "@/utils/locale-server";
 
 export default async function FreightForwarding() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const lang = await getLocale();
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='freight'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -88,26 +114,39 @@ export default async function FreightForwarding() {
                                                             }`,
   });
   const { content } = homeData;
+  const serviceSchema = getServiceSchema("Freight Forwarding Services", "Reliable freight forwarding and global logistics management to move your cargo across borders efficiently.", "https://www.mgcfreight.com/freight-forwarding", lang);
+  const faqBlock = content.find((e) => e._type === "faqs");
+  const faqSchema = faqBlock && faqBlock.questions ? getFAQSchema(faqBlock.questions, lang) : null;
+
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className={`flex flex-col gap-4`}>
         {content.map((e, index) => {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
                   identifier="1"
-                  breadCrumb={["Services","Freight Forwarding"]}
+                  breadCrumb={["Services", "Freight Forwarding"]}
                   header={e.header!}
                   title={e.title}
                   buttons={e.buttons}

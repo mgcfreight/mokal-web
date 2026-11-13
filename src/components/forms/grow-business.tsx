@@ -13,7 +13,6 @@ export default function GrowBusinessForm() {
   const { control, reset, handleSubmit } = useForm();
 
   function onError(e: any) {
-    console.log("eroor", e);
     const {
       response: {
         data: { message },

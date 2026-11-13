@@ -1,5 +1,28 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Get a Free Freight Quote | Canada & USA | MGC Freight",
+  description: "Get an instant free freight quote from MGC Freight. Compare LTL and FTL shipping rates from top Canadian carriers.",
+  keywords: ["shipping quote", "freight quote", "LTL quote", "truckload quote", "international shipping", "MGC Freight", "online quote", "freight rates", "logistics services", "custom shipping quote"],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  openGraph: {
+    title: "Get a Free Freight Quote | Canada & USA | MGC Freight",
+    description: "Get an instant free freight quote from MGC Freight. Compare LTL and FTL shipping rates from top Canadian carriers.",
+    type: "website",
+    locale: "en_US",
+    siteName: "MGC Freight",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Get a Free Freight Quote | Canada & USA | MGC Freight",
+    description: "Get an instant free freight quote from MGC Freight. Compare LTL and FTL shipping rates from top Canadian carriers.",
+  },
+};
+
 import { PagesContent } from "@/utils/types";
-import { fetchLocalized } from "@/utils/constants";
+import { client } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -24,7 +47,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 
 export default async function GetAQuote() {
-  const homeData: { content: [PagesContent] } = await fetchLocalized({
+  const homeData: { content: [PagesContent] } = await client.fetch({
     query: `*[_type=='get-a-quote'][0]{
                                                           "content":[...contentBlocks[]->{
 
@@ -97,13 +120,12 @@ export default async function GetAQuote() {
           return (
             <div
               key={e._type + index}
-              className={`${
-                index != 0
-                  ? index % 2 != 0
-                    ? "bg-white w-full"
-                    : "bg-base-shadeBlue w-full"
-                  : ""
-              }`}
+              className={`${index != 0
+                ? index % 2 != 0
+                  ? "bg-white w-full"
+                  : "bg-base-shadeBlue w-full"
+                : ""
+                }`}
             >
               {e._type == "title" && (
                 <Title
