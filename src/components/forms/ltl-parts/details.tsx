@@ -59,13 +59,29 @@ export default function Details() {
       : packagee
       ? PackageType.PACKAGE
       : PackageType.ENVELOP;
-    const items = values.items.map((e: any) => ({ ...e, packageType }));
+    // Build the body field by field: the API rejects any property its DTO
+    // doesn't declare (forbidNonWhitelisted), so UI-only form state such as
+    // the pallet/package/courier/envelop toggles must never be sent.
     const data = {
-      ...values,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      companyName: values.companyName,
+      measurementType: values.measurementType,
+      packageType,
       shippingFrom: toAddressPayload(values.shippingFrom),
       shippingTo: toAddressPayload(values.shippingTo),
-      packageType,
-      items,
+      items: values.items.map((item: any) => ({
+        length: item.length,
+        width: item.width,
+        height: item.height,
+        weight: item.weight,
+        pieces: item.pieces,
+        description: item.description,
+        palletType: item.palletType,
+        palletFreightClass: item.palletFreightClass,
+        packageType,
+      })),
     };
     mutate(data);
     // setActiveState((prev) => prev + 1);

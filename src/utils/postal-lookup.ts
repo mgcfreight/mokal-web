@@ -133,12 +133,13 @@ function toCountry(address: any): Country | undefined {
 
 /** Shape a shippingFrom/shippingTo form value for the quote-request API. */
 export function toAddressPayload(address: any) {
-  // countryCode is form-only: the API takes `country` as the code.
-  const rest = { ...(address ?? {}) };
-  delete rest.countryCode;
+  // Only the fields CreateShipmentAddressDto declares: the API rejects any
+  // other property, and countryCode is form-only (`country` carries the code).
   return {
-    ...rest,
-    postalCode: normalizePostalCode(rest.postalCode),
+    postalCode: normalizePostalCode(address?.postalCode),
     country: toCountry(address),
+    state: address?.state,
+    stateCode: address?.stateCode,
+    city: address?.city,
   };
 }

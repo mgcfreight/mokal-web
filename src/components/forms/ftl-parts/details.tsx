@@ -61,13 +61,23 @@ export default function Details() {
       : container
       ? FTLPackageType.CONTAINER
       : FTLPackageType.VAN;
-    const items = values.items.map((e: any) => ({ ...e }));
+    // Build the body field by field: the API rejects any property its DTO
+    // doesn't declare (forbidNonWhitelisted), so UI-only form state such as
+    // the flatbed/reefer/van/container toggles must never be sent.
     const data = {
-      ...values,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      companyName: values.companyName,
+      measurementType: values.measurementType,
+      packageType,
+      palletQuantity: values.palletQuantity,
       shippingFrom: toAddressPayload(values.shippingFrom),
       shippingTo: toAddressPayload(values.shippingTo),
-      packageType,
-      items,
+      items: values.items.map((item: any) => ({
+        weight: item.weight,
+        description: item.description,
+      })),
     };
     mutate(data);
     // setActiveState((prev) => prev + 1);
