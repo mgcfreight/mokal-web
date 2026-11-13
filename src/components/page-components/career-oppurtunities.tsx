@@ -12,6 +12,9 @@ import { useEffect, useState } from "react";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 import CareerOppurtunity from "./career-oppurtunity";
+import { useDebouncedValue } from "@/utils/use-debounced-value";
+
+const MAX_LIMIT = 20;
 
 export default function CareerOppurtunities() {
   // Defaults keep the first /api/jobs request from sending "undefined"
@@ -21,20 +24,24 @@ export default function CareerOppurtunities() {
   });
   const [page, setPage] = useState(1);
 
-  const search = watch("search");
+  const search = useDebouncedValue(((watch("search") as string) ?? "").trim());
 
-  const limit = watch("limit");
+  // /api/jobs accepts 1..MAX_LIMIT; keep whatever is typed inside that range.
+  const typedLimit = Math.trunc(Number(watch("limit")));
+  const limit = Number.isFinite(typedLimit)
+    ? Math.min(Math.max(typedLimit, 1), MAX_LIMIT)
+    : 1;
   const { data } = useQuery({
     queryKey: ["jobs", search, limit, page],
     queryFn: ({ queryKey }) =>
-      axios.get(
-        `/api/jobs?job=${queryKey[1]}&limit=${queryKey[2]}&page=${queryKey[3]}`
-      ),
+      axios.get("/api/jobs", {
+        params: { job: queryKey[1], limit: queryKey[2], page: queryKey[3] },
+      }),
   });
 
   useEffect(() => {
     setPage(1);
-  }, [limit]);
+  }, [limit, search]);
 
   return (
     <div
@@ -98,6 +105,7 @@ export default function CareerOppurtunities() {
                     className="w-full"
                     type="number"
                     min={1}
+                    max={MAX_LIMIT}
                     control={control}
                   />
                 </div>
@@ -131,7 +139,7 @@ export default function CareerOppurtunities() {
                     </BaseButton>
                   ))}
                 <BaseButton
-                  isDisabled={page == data.data.totalItems}
+                  isDisabled={page >= data.data.totalPages}
                   onClick={() => setPage((prev) => prev + 1)}
                   className="bg-gray-200 text-base-blue"
                 >

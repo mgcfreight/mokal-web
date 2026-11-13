@@ -801,7 +801,9 @@ export const links = {
 export const client = new SanityClient({
   projectId: process.env.SANITY_PROJECT_ID!,
   dataset: process.env.SANITY_STUDIO_DATASET!,
-  useCdn: process.env.SANITY_STUDIO_DATASET == "staging",
+  // Deployed builds read from Sanity's CDN; local dev hits the live API so
+  // edits in the studio show up immediately.
+  useCdn: process.env.NODE_ENV === "production",
 });
 
 /**

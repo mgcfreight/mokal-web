@@ -8,12 +8,13 @@ export default async function Blog({params}:{params:Promise<{blogId:string}>}) {
     const {blogId}=(await params)
 
     const individualBlogData = await fetchLocalized({
-        query: `*[_type == 'blog' && _id=='${blogId}'][0]{
+        query: `*[_type == 'blog' && _id == $id][0]{
 "id":_id,
   "imageUrl":image.asset->url,
     "title":title,
      "publishedAt":_createdAt,
  "content":[...contents.${DEFAULT_LOCALE}[].children[]]}`,
+        params: { id: blogId },
         config: {
             cache: 'no-store'
         }

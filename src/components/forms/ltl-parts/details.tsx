@@ -59,9 +59,9 @@ export default function Details() {
       : packagee
       ? PackageType.PACKAGE
       : PackageType.ENVELOP;
-    // Build the body field by field: the API rejects any property its DTO
-    // doesn't declare (forbidNonWhitelisted), so UI-only form state such as
-    // the pallet/package/courier/envelop toggles must never be sent.
+    // Build the body field by field so it carries exactly the fields
+    // QuoteRequestLTLDTO declares. UI-only form state such as the
+    // pallet/package/courier/envelop toggles isn't part of the request.
     const data = {
       firstName: values.firstName,
       lastName: values.lastName,
