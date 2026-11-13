@@ -2,7 +2,10 @@
 
 import { Video } from "@triyanox/react-video"
 
-export default function BaseVideo({src}:{src:string}) {
+export default function BaseVideo({src, poster}:{src?: string | null, poster?: string}) {
+    // An empty src makes the browser re-request the page; render nothing instead.
+    if (!src) return null
+
     return (
         <Video
             autoPlay={false}
@@ -18,7 +21,7 @@ export default function BaseVideo({src}:{src:string}) {
                     },
                 }
             }
-            poster=""
+            poster={poster || undefined}
             src={src}
         />
     )

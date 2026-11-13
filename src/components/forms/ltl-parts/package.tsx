@@ -1,7 +1,15 @@
 import BaseButton from "@/components/common/base-button";
 import BaseInput from "@/components/common/forms/base-input";
 import BaseSwitch from "@/components/common/forms/base-switch";
-import axiosInstance from "@/utils/axiosInstance";
+import {
+  INVALID_POSTAL_MESSAGE,
+  LOOKUP_FAILED_MESSAGE,
+  PostalLocation,
+  UNSUPPORTED_COUNTRY_MESSAGE,
+  isSupportedLocation,
+  lookupPostalCode,
+  normalizePostalCode,
+} from "@/utils/postal-lookup";
 import { Input, Radio, RadioGroup, Select, SelectItem } from "@heroui/react";
 import Image from "next/image";
 import { useContext, useEffect } from "react";
@@ -35,6 +43,7 @@ export default function PackageLTL() {
     setValue,
     register,
     trigger,
+    getValues,
   } = useFormContext();
   const { fields, append, remove } = useFieldArray({ name: "items", control });
   const watchValues = useWatch({ control });
@@ -62,49 +71,63 @@ export default function PackageLTL() {
   const { field: radioFields, fieldState: radioFieldState } = useController({
     name: "measurementType",
     control,
+    // "" (not undefined) keeps the RadioGroup controlled from the first render.
+    defaultValue: "",
     rules: { required: "Class is required" },
   });
 
-  useEffect(() => {
-    const postal = watchValues?.shippingFrom?.postalCode;
-    const timeOut = setTimeout(async () => {
-      if (postal.length >= 5) {
-        const dataa = await axiosInstance.get(`/location?postalCode=${postal}`);
-        const {
-          data: { data },
-        } = dataa;
-        const { city, country, state, stateCode } = data;
+  function fillLocation(
+    prefix: "shippingFrom" | "shippingTo",
+    loc: PostalLocation | null
+  ) {
+    setValue(`${prefix}.city`, loc?.city ?? "");
+    setValue(`${prefix}.country`, loc?.country ?? "");
+    setValue(`${prefix}.countryCode`, loc?.countryCode ?? "");
+    setValue(`${prefix}.state`, loc?.state ?? "");
+    setValue(`${prefix}.stateCode`, loc?.stateCode ?? "");
+  }
 
-        setValue("shippingFrom.city", city);
-        setValue("shippingFrom.country", country);
-        setValue("shippingFrom.state", state);
-        setValue("shippingFrom.stateCode", stateCode);
-
-        trigger("shippingFrom.postalCode");
-      }
-    }, 3000);
+  // Auto-fill country/state/city shortly after the user stops typing.
+  // The validator does the lookup and fills the fields.
+  function scheduleLookup(
+    prefix: "shippingFrom" | "shippingTo",
+    postal: unknown
+  ) {
+    if (normalizePostalCode(postal).length < 5) {
+      fillLocation(prefix, null);
+      return;
+    }
+    const timeOut = setTimeout(() => trigger(`${prefix}.postalCode`), 600);
     return () => clearTimeout(timeOut);
-  }, [watchValues?.shippingFrom?.postalCode]);
+  }
 
-  useEffect(() => {
-    const postal = watchValues?.shippingTo?.postalCode;
-    const timeOut = setTimeout(async () => {
-      if (postal.length >= 5) {
-        const dataa = await axiosInstance.get(`/location?postalCode=${postal}`);
-        const {
-          data: { data },
-        } = dataa;
-        const { city, country, state, stateCode } = data;
-        setValue("shippingTo.city", city);
-        setValue("shippingTo.country", country);
-        setValue("shippingTo.state", state);
-        setValue("shippingTo.stateCode", stateCode);
+  const fromPostal = watchValues?.shippingFrom?.postalCode;
+  const toPostal = watchValues?.shippingTo?.postalCode;
+  useEffect(() => scheduleLookup("shippingFrom", fromPostal), [fromPostal]);
+  useEffect(() => scheduleLookup("shippingTo", toPostal), [toPostal]);
 
-        trigger("shippingTo.postalCode");
+  // Validate against the API itself instead of fields that may not be filled yet.
+  function postalValidator(prefix: "shippingFrom" | "shippingTo") {
+    return async (value: string) => {
+      const isCurrent = () =>
+        normalizePostalCode(getValues(`${prefix}.postalCode`)) ===
+        normalizePostalCode(value);
+      let loc: PostalLocation | null;
+      try {
+        loc = await lookupPostalCode(value);
+      } catch {
+        if (!isCurrent()) return true;
+        fillLocation(prefix, null);
+        return LOOKUP_FAILED_MESSAGE;
       }
-    }, 3000);
-    return () => clearTimeout(timeOut);
-  }, [watchValues?.shippingTo?.postalCode]);
+      // A slower response for an older value must not overwrite the fields
+      // or set an error: the run for the current value decides that.
+      if (!isCurrent()) return true;
+      fillLocation(prefix, loc);
+      if (!loc) return INVALID_POSTAL_MESSAGE;
+      return isSupportedLocation(loc) || UNSUPPORTED_COUNTRY_MESSAGE;
+    };
+  }
 
   useEffect(() => {
     const { envelop, package: packagee, courier, pallet } = watchValues;
@@ -288,7 +311,7 @@ export default function PackageLTL() {
         <div className="flex gap-4 w-full">
           <BaseInput
             name="shippingFrom.postalCode"
-            maxLength={6}
+            maxLength={10}
             classNames={{
               inputWrapper:
                 "bg-transparent border-1 border-base-teal p-7 rounded-xl",
@@ -308,14 +331,7 @@ export default function PackageLTL() {
                 value: 5,
                 message: "Min Length is 5",
               },
-              validate: (value, formValues) => {
-                return (
-                  (!!formValues.shippingFrom.city &&
-                    !!formValues.shippingFrom.country &&
-                    !!formValues.shippingFrom.state) ||
-                  "Invalid Postal Code"
-                );
-              },
+              validate: postalValidator("shippingFrom"),
             }}
             label="Postal / Zip Code *"
             labelPlacement="outside"
@@ -374,7 +390,7 @@ export default function PackageLTL() {
         <div className="flex gap-4 w-full">
           <BaseInput
             name="shippingTo.postalCode"
-            maxLength={6}
+            maxLength={10}
             onValueChange={(value) => {
               setValue(
                 "shippingTo.postalCode",
@@ -387,14 +403,7 @@ export default function PackageLTL() {
                 value: 5,
                 message: "Min Length is 5",
               },
-              validate: (value, formValues) => {
-                return (
-                  (!!formValues.shippingTo.city &&
-                    !!formValues.shippingTo.country &&
-                    !!formValues.shippingTo.state) ||
-                  "Invalid Postal Code"
-                );
-              },
+              validate: postalValidator("shippingTo"),
             }}
             classNames={{
               inputWrapper:

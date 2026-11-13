@@ -10,15 +10,20 @@ import { Blogs, IndvidualBlog } from "@/utils/types";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ImSpinner9 } from "react-icons/im";
+import { useDebouncedValue } from "@/utils/use-debounced-value";
 import { useTranslate } from "@/providers/locale-provider";
 
 export default function BlogsClient({ data }: { data: Blogs }) {
   const { control, watch } = useForm();
   const router = useRouter();
-  const search = watch("search");
-  const blogQuery = useQuery(["blogs", search], ({ queryKey }) =>
-    axios.get(`/api/blog?searchQuery=${queryKey[1]}`)
-  );
+  const search: string = (watch("search") ?? "").trim();
+  const debouncedSearch = useDebouncedValue(search);
+  const blogQuery = useQuery({
+    queryKey: ["blogs", debouncedSearch],
+    queryFn: ({ queryKey }) =>
+      axios.get("/api/blog", { params: { searchQuery: queryKey[1] } }),
+    enabled: !!debouncedSearch,
+  });
   const t = useTranslate();
   return (
     <>
@@ -46,7 +51,8 @@ export default function BlogsClient({ data }: { data: Blogs }) {
               control={control}
               placeholder="Search Blogs"
               endContent={
-                search && blogQuery.isLoading ? (
+                search &&
+                (search !== debouncedSearch || blogQuery.isFetching) ? (
                   <ImSpinner9 className="animate-spin" size={20} />
                 ) : (
                   <BiSearch size={20} />
@@ -54,7 +60,7 @@ export default function BlogsClient({ data }: { data: Blogs }) {
               }
             />
             <div className={`flex flex-wrap  text-center gap-4`}>
-              {(search ? blogQuery.data?.data : data)?.map(
+              {(debouncedSearch ? blogQuery.data?.data : data)?.map(
                 (e: IndvidualBlog) => (
                   <div
                     key={e.id}

@@ -22,10 +22,13 @@ export const metadata: Metadata = {
 };
 
 import { client } from "@/utils/constants";
+import { getLocale } from "@/utils/locale-server";
 import { Blogs } from "@/utils/types";
 import BlogsClient from "@/components/page-components/blogs";
 
 
+// `contents` is localized ({ en: [...blocks], fr: [...] }); pick the
+// requested language and fall back to English.
 const query = ` *[_type == 'blog']{
   "authorName":Author.authorName,
     "authorImg":Author.authorImage.asset->url,
@@ -33,15 +36,14 @@ const query = ` *[_type == 'blog']{
   "imageUrl":image.asset->url,
     "title":title,
      "publishedAt":_createdAt,
- "content":[...contents[].children[]]}`
-
+ "content":[...coalesce(contents[$lang], contents.en)[].children[]]}`
 
 export default async function BlogsPage() {
-
-
+  const lang = await getLocale();
 
   const blogsData: Blogs = await client.fetch({
     query,
+    params: { lang },
     config: {
       cache: 'no-store',
     }

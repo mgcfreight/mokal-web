@@ -19,7 +19,7 @@ export default function BaseSwitch({
   });
   return (
     <Switch
-      isSelected={field.value}
+      isSelected={!!field.value}
       {...props}
       onValueChange={(booleanValue) => field.onChange(booleanValue)}
     />
