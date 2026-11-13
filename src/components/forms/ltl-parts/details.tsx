@@ -1,18 +1,24 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LtlFormContext } from "./ltl-form";
 import { FieldValues, useFormContext } from "react-hook-form";
 import BaseInput from "@/components/common/forms/base-input";
 import BaseButton from "@/components/common/base-button";
-import { Country, PackageType } from "@/utils/types";
+import { PackageType } from "@/utils/types";
+import {
+  findInvalidPostalCode,
+  toAddressPayload,
+} from "@/utils/postal-lookup";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 
 export default function Details() {
   const { setActiveState } = useContext(LtlFormContext);
-  const { control, handleSubmit, setValue, getValues } = useFormContext();
+  const { control, handleSubmit, setValue, getValues, setError } =
+    useFormContext();
+  const [checking, setChecking] = useState(false);
   function onError(e: any) {
     const {
       response: {
@@ -29,12 +35,22 @@ export default function Details() {
   function onSuccess() {
     setActiveState((prev) => prev + 1);
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/quote-request/ltl", data),
-    { onError, onSuccess }
-  );
-  function submit(values: FieldValues) {
-    // console.log("neww", values);
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/quote-request/ltl", data),
+    onError, onSuccess,
+  });
+  async function submit(values: FieldValues) {
+    // The Package step's validator can let a code through if it was edited
+    // mid-check, so re-check both codes (cached, so cheap) before sending.
+    setChecking(true);
+    const failed = await findInvalidPostalCode(values);
+    setChecking(false);
+    if (failed) {
+      setActiveState(1);
+      setError(failed.name, { type: "validate", message: failed.message });
+      toast.error(failed.message);
+      return;
+    }
     const { pallet, courier, package: packagee } = values;
     const packageType = pallet
       ? PackageType.PALLET
@@ -43,25 +59,29 @@ export default function Details() {
       : packagee
       ? PackageType.PACKAGE
       : PackageType.ENVELOP;
-    const items = values.items.map((e: any) => ({ ...e, packageType }));
+    // Build the body field by field so it carries exactly the fields
+    // QuoteRequestLTLDTO declares. UI-only form state such as the
+    // pallet/package/courier/envelop toggles isn't part of the request.
     const data = {
-      ...values,
-      shippingFrom: {
-        ...values.shippingFrom,
-        country:
-          values.shippingFrom.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
-      shippingTo: {
-        ...values.shippingTo,
-        country:
-          values.shippingTo.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      companyName: values.companyName,
+      measurementType: values.measurementType,
       packageType,
-      items,
+      shippingFrom: toAddressPayload(values.shippingFrom),
+      shippingTo: toAddressPayload(values.shippingTo),
+      items: values.items.map((item: any) => ({
+        length: item.length,
+        width: item.width,
+        height: item.height,
+        weight: item.weight,
+        pieces: item.pieces,
+        description: item.description,
+        palletType: item.palletType,
+        palletFreightClass: item.palletFreightClass,
+        packageType,
+      })),
     };
     mutate(data);
     // setActiveState((prev) => prev + 1);
@@ -178,8 +198,8 @@ export default function Details() {
           Previous
         </BaseButton>
         <BaseButton
-          isDisabled={isLoading}
-          isLoading={isLoading}
+          isDisabled={isLoading || checking}
+          isLoading={isLoading || checking}
           type="submit"
           extraClass="!p-6"
         >

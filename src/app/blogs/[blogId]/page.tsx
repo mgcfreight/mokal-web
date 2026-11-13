@@ -14,7 +14,8 @@ export async function generateMetadata({
   const locale = await getLocale();
   try {
     const blog: { title: { en: string, fr: string } } = await client.fetch({
-      query: `*[_type == 'blog' && _id=='${blogId}'][0]{ title }`,
+      query: `*[_type == 'blog' && _id == $id][0]{ title }`,
+      params: { id: blogId },
       config: {
         cache: "no-store",
       },
@@ -53,22 +54,22 @@ export async function generateMetadata({
 
 export default async function Blog({ params }: { params: Promise<{ blogId: string }> }) {
   const { blogId } = (await params)
+  const lang = await getLocale();
 
   const individualBlogData = await client.fetch({
-    query: `*[_type == 'blog' && _id=='${blogId}'][0]{
+    query: `*[_type == 'blog' && _id == $id][0]{
 "id":_id,
   "imageUrl":image.asset->url,
     "title":title,
      "publishedAt":_createdAt,
      "authorName":Author.authorName,
      "authorImg":Author.authorImage.asset->url,
- "content":[...contents[].children[]]}`,
+ "content":[...coalesce(contents[$lang], contents.en)[].children[]]}`,
+    params: { id: blogId, lang },
     config: {
       cache: 'no-store'
     }
   })
-
-  const lang = await getLocale();
 
   const blogSchema = individualBlogData
     ? getBlogPostingSchema(individualBlogData, `https://www.mgcfreight.com/blogs/${blogId}`, lang)

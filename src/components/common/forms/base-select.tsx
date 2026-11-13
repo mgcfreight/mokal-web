@@ -35,6 +35,9 @@ export default function BaseSelect({
   return (
     <Select
       {...field}
+      // HeroUI's Select ignores `value`; drive it from the form state so a
+      // reset() actually clears the shown selection.
+      selectedKeys={field.value ? [String(field.value)] : []}
       isInvalid={!!error}
       classNames={{ ...classNames, helperWrapper: "text-start" }}
       errorMessage={error?.message}

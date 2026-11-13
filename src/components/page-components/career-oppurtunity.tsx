@@ -97,10 +97,10 @@ export default function CareerOppurtunity({
     toast.success("Submitted Successfully");
     reset();
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.postForm("/platform/jobApply", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.postForm("/platform/jobApply", data),
+    onError, onSuccess,
+  });
   function submit(e: FieldValues) {
     const { email, firstName, lastName, resume, coverLetter, message } = e;
     const formData = new FormData();

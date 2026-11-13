@@ -35,11 +35,11 @@ export default function TrackShipment({
   const { control, setValue, handleSubmit } = useForm();
 
 
-  const { mutate, isLoading, data } = useMutation(
-    (data: string) =>
+  const { mutate, isPending: isLoading, data } = useMutation({
+    mutationFn: (data: string) =>
       axiosInstance.get<any>(`/shipment/track?trackingId=${data}`),
-    { onSuccess }
-  );
+    onSuccess,
+  });
 
   function onSuccess(dataa: any) {
     const {

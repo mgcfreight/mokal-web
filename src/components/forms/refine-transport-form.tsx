@@ -31,10 +31,10 @@ export default function RefineTransportForm() {
     toast.success("Submitted Successfully");
     reset();
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.postForm("/platform/refine-transport", data),
-    { onError, onSuccess }
-  );
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.postForm("/platform/refine-transport", data),
+    onError, onSuccess,
+  });
 
   function refineSubmit(values: FieldValues) {
     const {

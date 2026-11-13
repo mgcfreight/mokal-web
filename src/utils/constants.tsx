@@ -10,12 +10,13 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import SanityClient from "next-sanity-client";
+import { localize } from "./localize";
 
 export const countries = ["Canada", "USA", "Mexico"];
 
 export const phoneNumber = "+1 (289) 295-1640";
 
-export const mokalLink = "https://mokal.vercel.app/login";
+export const mokalLink = "https://platform.mgcfreight.com/login";
 
 export const navbarMenuSettings: NavbarMenuSetting[] = [
   {
@@ -800,5 +801,21 @@ export const links = {
 export const client = new SanityClient({
   projectId: process.env.SANITY_PROJECT_ID!,
   dataset: process.env.SANITY_STUDIO_DATASET!,
-  useCdn: process.env.SANITY_STUDIO_DATASET == "staging",
+  // Deployed builds read from Sanity's CDN; local dev hits the live API so
+  // edits in the studio show up immediately.
+  useCdn: process.env.NODE_ENV === "production",
 });
+
+/**
+ * `client.fetch` that unwraps localized Sanity fields (`{ en: "..." }`) in the
+ * result. Use this for every content query.
+ *
+ * It only touches the result: a query that filters on or traverses a localized
+ * field must address the locale itself, e.g. `title.en match ...` or
+ * `contents.en[]` (see DEFAULT_LOCALE in ./localize).
+ */
+export async function fetchLocalized<T = any>(
+  ...args: Parameters<typeof client.fetch>
+): Promise<T> {
+  return localize<T>(await client.fetch(...args));
+}
