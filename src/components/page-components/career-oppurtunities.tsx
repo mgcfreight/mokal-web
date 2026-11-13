@@ -3,7 +3,7 @@
 import BaseButton from "../common/base-button";
 import BaseInput from "../common/forms/base-input";
 import { Accordion, AccordionItem } from "@heroui/react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import LinearGradientText from "../common/linear-gradient-text";
 import { BiSearch } from "react-icons/bi";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,11 @@ import { GrFormNext } from "react-icons/gr";
 import CareerOppurtunity from "./career-oppurtunity";
 
 export default function CareerOppurtunities() {
-  const { control, watch, setValue } = useForm();
+  // Defaults keep the first /api/jobs request from sending "undefined"
+  // (limit=undefined made the route build an invalid query and return 500).
+  const { control, watch } = useForm<FieldValues>({
+    defaultValues: { search: "", limit: 4 },
+  });
   const [page, setPage] = useState(1);
 
   const search = watch("search");
@@ -27,10 +31,6 @@ export default function CareerOppurtunities() {
         `/api/jobs?job=${queryKey[1]}&limit=${queryKey[2]}&page=${queryKey[3]}`
       ),
   });
-
-  useEffect(() => {
-    setValue("limit", 4);
-  }, []);
 
   useEffect(() => {
     setPage(1);

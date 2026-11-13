@@ -1,6 +1,7 @@
 "use client";
 
 import { BaseFileProps } from "@/utils/types";
+import { useEffect, useRef } from "react";
 import { useController } from "react-hook-form";
 
 export default function BaseFile({
@@ -19,6 +20,13 @@ export default function BaseFile({
     field: { onChange, value },
     fieldState,
   } = useController({ name, control, rules, defaultValue: undefined });
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // The native input keeps its files after the form resets, so picking the
+  // same file again would fire no change event. Clear it with the form value.
+  useEffect(() => {
+    if (!value?.length && inputRef.current) inputRef.current.value = "";
+  }, [value]);
 
   return (
     <div className={`${className} flex flex-col gap-2`}>
@@ -38,6 +46,7 @@ export default function BaseFile({
       >
         <input
           id={name}
+          ref={inputRef}
           type="file"
           accept={accept}
           value={undefined}

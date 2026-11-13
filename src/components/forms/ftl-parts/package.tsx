@@ -53,6 +53,8 @@ export default function Package() {
   const { field: radioFields, fieldState: radioFieldState } = useController({
     name: "measurementType",
     control,
+    // "" (not undefined) keeps the RadioGroup controlled from the first render.
+    defaultValue: "",
     rules: { required: "Class is required" },
   });
 
