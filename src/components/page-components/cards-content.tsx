@@ -31,27 +31,6 @@ export default async function CardsContent({
   description,
   buttons,
 }: CardsProps) {
-  //     const reasonsToChooseUss: HeaderAndCards = reasonsToChooseUs?? await fetchLocalized({
-  //         query: `*[_type=='cards' && name=='Reasons To Choose Us'][0]{
-  //   ...,
-  //   "header":[...header[]{
-  //     Highlight,
-  //       Value
-  //   }],
-  //   "cards":[...cards[]{
-  //     "imageUrl":icon.asset->url,
-  //     heading,
-  //     description
-  //   }]
-  //             }`,
-  //         config: {
-  //             cache: 'no-store',
-  //         }
-  //     });
-
-  // console.log(reasonsToChooseUss)
-  console.log("butttons", buttons);
-
   return (
     <>
       {variation == 1 && (

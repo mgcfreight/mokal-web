@@ -1,19 +1,24 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LtlFormContext } from "./ltl-form";
 import { FieldValues, useFormContext } from "react-hook-form";
 import BaseInput from "@/components/common/forms/base-input";
 import BaseButton from "@/components/common/base-button";
 import { PackageType } from "@/utils/types";
-import { toAddressPayload } from "@/utils/postal-lookup";
+import {
+  findInvalidPostalCode,
+  toAddressPayload,
+} from "@/utils/postal-lookup";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 
 export default function Details() {
   const { setActiveState } = useContext(LtlFormContext);
-  const { control, handleSubmit, setValue, getValues } = useFormContext();
+  const { control, handleSubmit, setValue, getValues, setError } =
+    useFormContext();
+  const [checking, setChecking] = useState(false);
   function onError(e: any) {
     const {
       response: {
@@ -34,8 +39,18 @@ export default function Details() {
     mutationFn: (data: any) => axiosInstance.post("/platform/quote-request/ltl", data),
     onError, onSuccess,
   });
-  function submit(values: FieldValues) {
-    // console.log("neww", values);
+  async function submit(values: FieldValues) {
+    // The Package step's validator can let a code through if it was edited
+    // mid-check, so re-check both codes (cached, so cheap) before sending.
+    setChecking(true);
+    const failed = await findInvalidPostalCode(values);
+    setChecking(false);
+    if (failed) {
+      setActiveState(1);
+      setError(failed.name, { type: "validate", message: failed.message });
+      toast.error(failed.message);
+      return;
+    }
     const { pallet, courier, package: packagee } = values;
     const packageType = pallet
       ? PackageType.PALLET
@@ -167,8 +182,8 @@ export default function Details() {
           Previous
         </BaseButton>
         <BaseButton
-          isDisabled={isLoading}
-          isLoading={isLoading}
+          isDisabled={isLoading || checking}
+          isLoading={isLoading || checking}
           type="submit"
           extraClass="!p-6"
         >

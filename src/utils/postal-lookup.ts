@@ -53,7 +53,11 @@ export function lookupPostalCode(raw: unknown): Promise<PostalLocation | null> {
       .catch((error) => {
         const status = axios.isAxiosError(error) ? error.response?.status : 0;
         // Only 400/404 mean the API rejected the code itself: a definite "invalid".
-        if (status === 400 || status === 404) return null;
+        // mokal-backend also answers 400 when its own Google call fails, which
+        // says nothing about the code, so treat that like a 5xx.
+        if ((status === 400 || status === 404) && !isUpstreamFailure(error)) {
+          return null;
+        }
         // Anything else (429, 401/403, 5xx, network) says nothing about the
         // code: don't cache it, so the user can retry.
         cache.delete(postal);
@@ -62,6 +66,52 @@ export function lookupPostalCode(raw: unknown): Promise<PostalLocation | null> {
     cache.set(postal, request);
   }
   return cache.get(postal)!;
+}
+
+/**
+ * mokal-backend returns 400 "Invalid Google API Key" (INVALID_GOOGLE_API_KEY)
+ * when Google denies its geocoding request: an outage, not a bad code.
+ * TODO: drop once the backend returns a 5xx for upstream failures
+ * (https://github.com/mgcfreight/mokal-backend/issues/518).
+ */
+function isUpstreamFailure(error: unknown): boolean {
+  if (!axios.isAxiosError(error)) return false;
+  const message = (error.response?.data as any)?.message;
+  const text = Array.isArray(message) ? message.join(" ") : String(message ?? "");
+  return /google/i.test(text);
+}
+
+/**
+ * Re-check a postal code right before submitting. Lookups are cached, so this
+ * is cheap; it closes the gap where the field was edited while validation ran.
+ * Resolves to `true`, or the error message to show on the field.
+ */
+export async function checkPostalCode(raw: unknown): Promise<true | string> {
+  let loc: PostalLocation | null;
+  try {
+    loc = await lookupPostalCode(raw);
+  } catch {
+    return LOOKUP_FAILED_MESSAGE;
+  }
+  if (!loc) return INVALID_POSTAL_MESSAGE;
+  return isSupportedLocation(loc) || UNSUPPORTED_COUNTRY_MESSAGE;
+}
+
+/** The first of shippingFrom/shippingTo whose postal code fails a re-check. */
+export async function findInvalidPostalCode(values: {
+  shippingFrom?: { postalCode?: unknown };
+  shippingTo?: { postalCode?: unknown };
+}): Promise<{ name: string; message: string } | null> {
+  const prefixes = ["shippingFrom", "shippingTo"] as const;
+  const results = await Promise.all(
+    prefixes.map((p) => checkPostalCode(values[p]?.postalCode))
+  );
+  const index = results.findIndex((r) => r !== true);
+  if (index === -1) return null;
+  return {
+    name: `${prefixes[index]}.postalCode`,
+    message: results[index] as string,
+  };
 }
 
 /**
