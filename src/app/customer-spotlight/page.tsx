@@ -14,7 +14,7 @@ import SingleSlider from "@/components/page-components/single-slider";
 import CareerOppurtunities from "@/components/page-components/career-oppurtunities";
 import NoOpenForm from "@/components/forms/no-open-complete";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import BookADemoForm from "@/components/forms/book-a-demo";
 import ReactOut from "@/components/forms/broker-partner-form";
 import TrackShipment from "@/components/page-components/track-shipment";
@@ -23,7 +23,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function CustomerSpotlight() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='customer-spotlight'][0]{
                                                           "content":[...contentBlocks[]->{
 

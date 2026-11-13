@@ -20,6 +20,9 @@ export default function BaseInput({
   return (
     <Input
       {...field}
+      // reset() without defaultValues sets the field to undefined, which would
+      // flip the input from controlled to uncontrolled.
+      value={field.value ?? ""}
       classNames={{ ...classNames, helperWrapper: "text-start" }}
       isInvalid={!!fieldState.error}
       errorMessage={fieldState.error?.message}

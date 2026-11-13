@@ -1,5 +1,5 @@
 import LinearGradientText from "@/components/common/linear-gradient-text";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 import { PagesContent } from "@/utils/types";
 import { PortableText } from "@portabletext/react";
@@ -70,7 +70,7 @@ const components = {
 
 export default async function TermsAndConditions() {
   const homeData: { content: [PagesContent]; remaining: any } =
-    await client.fetch({
+    await fetchLocalized({
       query: `*[_type=='termsandconditions'][0]{
   "content":[...contentBlocks[]->{
     ...,

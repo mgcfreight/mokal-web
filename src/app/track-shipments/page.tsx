@@ -1,6 +1,6 @@
 import TrackShipment from "@/components/page-components/track-shipment";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -28,7 +28,7 @@ export default async function TrackShipments({
 }: {
   searchParams: Promise<{ id: string }>;
 }) {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='track-shipment'][0]{
                                                           "content":[...contentBlocks[]->{
 

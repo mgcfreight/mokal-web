@@ -4,11 +4,11 @@ import BaseButton from "../common/base-button";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { CourierServiceProps, HeaderAndCards } from "@/utils/types";
 import Link from "next/link";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 
 export default async function CourierService({ bgColor = 'bg-base-shadeBlue' }: CourierServiceProps) {
 
-    const courierService: HeaderAndCards = await client.fetch({
+    const courierService: HeaderAndCards = await fetchLocalized({
         query: `*[_type=='cards' && name=='Courier Service'][0]{
   ...,
   "header":[...header[]{

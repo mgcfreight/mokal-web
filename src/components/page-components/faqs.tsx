@@ -3,27 +3,6 @@ import { FAQS } from "@/utils/types";
 import AccordionFaqs from "./accordion.faq";
 
 export default async function FAQSs({header,description,questions}:FAQS) {
-
-//     const faqsData: FAQS =data??  await client.fetch(
-//         {
-//             query: `*[_type == 'faqs'][0]{
-//   // ...,
-//    description,
-//      "header":[...header[]{
-//        Value,
-//          Highlight
-//      }],
-//                "questions":[...questions[]{answer,question}]
-//  }`, config: {
-//                 cache: 'no-store',
-//             }
-//         },
-
-//     )
-
-    // console.log(faqsData)
-
-
     return (
 
             <div className={`flex flex-col m-auto sm:px-8 px-4 sm:py-20 py-16 sm:w-[80%] text-center gap-4`}>

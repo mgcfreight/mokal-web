@@ -19,6 +19,7 @@ export default function BaseTextArea({
       classNames={{ ...classNames, helperWrapper: "text-start" }}
       errorMessage={error?.message}
       {...field}
+      value={field.value ?? ""}
       {...props}
     />
   );

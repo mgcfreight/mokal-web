@@ -5,7 +5,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import Marquee from "react-fast-marquee";
 import {
   aboutUsServices,
-  client,
+  fetchLocalized,
   links,
   partnershipLinks,
   quickLinksLinks,
@@ -17,7 +17,7 @@ import axios from "axios";
 import { configData } from "@/utils/types";
 
 export default async function Footer() {
-  const configData: configData = await client.fetch({
+  const configData: configData = await fetchLocalized({
     query: `*[_type == 'config'][0]{
         ...,
         "imageUrl": logo.asset->url,
@@ -27,7 +27,7 @@ export default async function Footer() {
     },
   });
 
-  const carriers: { imageUrl: string[] } = await client.fetch({
+  const carriers: { imageUrl: string[] } = await fetchLocalized({
     query: `*[_type == 'carriers'][0]{
   "imageUrl": logos[].asset->url
 }

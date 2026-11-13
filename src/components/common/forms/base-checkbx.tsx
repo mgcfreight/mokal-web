@@ -16,7 +16,12 @@ export default function BaseCheckBox({
     rules,
   });
   return (
-    <Checkbox {...field} isInvalid={!!fieldState.error}>
+    <Checkbox
+      {...field}
+      value={undefined}
+      isSelected={!!field.value}
+      isInvalid={!!fieldState.error}
+    >
       {children}
     </Checkbox>
   );

@@ -3,7 +3,7 @@
 import BaseButton from "../common/base-button";
 import BaseInput from "../common/forms/base-input";
 import { Accordion, AccordionItem } from "@heroui/react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import LinearGradientText from "../common/linear-gradient-text";
 import { BiSearch } from "react-icons/bi";
 import { useQuery } from "@tanstack/react-query";
@@ -12,27 +12,36 @@ import { useEffect, useState } from "react";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 import CareerOppurtunity from "./career-oppurtunity";
+import { useDebouncedValue } from "@/utils/use-debounced-value";
+
+const MAX_LIMIT = 20;
 
 export default function CareerOppurtunities() {
-  const { control, watch, setValue } = useForm();
+  // Defaults keep the first /api/jobs request from sending "undefined"
+  // (limit=undefined made the route build an invalid query and return 500).
+  const { control, watch } = useForm<FieldValues>({
+    defaultValues: { search: "", limit: 4 },
+  });
   const [page, setPage] = useState(1);
 
-  const search = watch("search");
+  const search = useDebouncedValue(((watch("search") as string) ?? "").trim());
 
-  const limit = watch("limit");
-  const { data } = useQuery(["jobs", search, limit, page], ({ queryKey }) =>
-    axios.get(
-      `/api/jobs?job=${queryKey[1]}&limit=${queryKey[2]}&page=${queryKey[3]}`
-    )
-  );
-
-  useEffect(() => {
-    setValue("limit", 4);
-  }, []);
+  // /api/jobs accepts 1..MAX_LIMIT; keep whatever is typed inside that range.
+  const typedLimit = Math.trunc(Number(watch("limit")));
+  const limit = Number.isFinite(typedLimit)
+    ? Math.min(Math.max(typedLimit, 1), MAX_LIMIT)
+    : 1;
+  const { data } = useQuery({
+    queryKey: ["jobs", search, limit, page],
+    queryFn: ({ queryKey }) =>
+      axios.get("/api/jobs", {
+        params: { job: queryKey[1], limit: queryKey[2], page: queryKey[3] },
+      }),
+  });
 
   useEffect(() => {
     setPage(1);
-  }, [limit]);
+  }, [limit, search]);
 
   return (
     <div
@@ -96,6 +105,7 @@ export default function CareerOppurtunities() {
                     className="w-full"
                     type="number"
                     min={1}
+                    max={MAX_LIMIT}
                     control={control}
                   />
                 </div>
@@ -129,7 +139,7 @@ export default function CareerOppurtunities() {
                     </BaseButton>
                   ))}
                 <BaseButton
-                  isDisabled={page == data.data.totalItems}
+                  isDisabled={page >= data.data.totalPages}
                   onClick={() => setPage((prev) => prev + 1)}
                   className="bg-gray-200 text-base-blue"
                 >

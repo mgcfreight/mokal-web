@@ -1,4 +1,4 @@
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import CustomerBase from "@/components/page-components/customer-base";
 import { PagesContent } from "@/utils/types";
 import FAQSs from "@/components/page-components/faqs";
@@ -23,7 +23,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function Home() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='home'][0]{
                                                           "content":[...contentBlocks[]->{
 

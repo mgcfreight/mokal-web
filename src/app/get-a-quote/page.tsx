@@ -1,5 +1,5 @@
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -24,7 +24,7 @@ import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 
 export default async function GetAQuote() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='get-a-quote'][0]{
                                                           "content":[...contentBlocks[]->{
 

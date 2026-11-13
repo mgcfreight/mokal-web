@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { FieldValues, useFormContext } from "react-hook-form";
 import BaseInput from "@/components/common/forms/base-input";
@@ -9,11 +9,17 @@ import { FtlFormContext } from "../ftl-form";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
-import { Country, FTLPackageType } from "@/utils/types";
+import { FTLPackageType } from "@/utils/types";
+import {
+  findInvalidPostalCode,
+  toAddressPayload,
+} from "@/utils/postal-lookup";
 
 export default function Details() {
   const { setActiveState } = useContext(FtlFormContext);
-  const { control, handleSubmit, getValues, setValue } = useFormContext();
+  const { control, handleSubmit, getValues, setValue, setError } =
+    useFormContext();
+  const [checking, setChecking] = useState(false);
 
   function onError(e: any) {
     const {
@@ -31,12 +37,22 @@ export default function Details() {
   function onSuccess() {
     setActiveState((prev) => prev + 1);
   }
-  const { mutate, isLoading } = useMutation(
-    (data: any) => axiosInstance.post("/platform/quote-request/ftl", data),
-    { onError, onSuccess }
-  );
-  function submit(values: FieldValues) {
-    console.log("neww", values);
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: (data: any) => axiosInstance.post("/platform/quote-request/ftl", data),
+    onError, onSuccess,
+  });
+  async function submit(values: FieldValues) {
+    // The Package step's validator can let a code through if it was edited
+    // mid-check, so re-check both codes (cached, so cheap) before sending.
+    setChecking(true);
+    const failed = await findInvalidPostalCode(values);
+    setChecking(false);
+    if (failed) {
+      setActiveState(1);
+      setError(failed.name, { type: "validate", message: failed.message });
+      toast.error(failed.message);
+      return;
+    }
     const { reefer, flatbed, container } = values;
     const packageType = reefer
       ? FTLPackageType.REEFER
@@ -45,25 +61,23 @@ export default function Details() {
       : container
       ? FTLPackageType.CONTAINER
       : FTLPackageType.VAN;
-    const items = values.items.map((e: any) => ({ ...e }));
+    // Build the body field by field so it carries exactly the fields
+    // QuoteRequestFTLDTO declares. UI-only form state such as the
+    // flatbed/reefer/van/container toggles isn't part of the request.
     const data = {
-      ...values,
-      shippingFrom: {
-        ...values.shippingFrom,
-        country:
-          values.shippingFrom.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
-      shippingTo: {
-        ...values.shippingTo,
-        country:
-          values.shippingTo.country == "United States"
-            ? Country.US
-            : Country.CA,
-      },
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      companyName: values.companyName,
+      measurementType: values.measurementType,
       packageType,
-      items,
+      palletQuantity: values.palletQuantity,
+      shippingFrom: toAddressPayload(values.shippingFrom),
+      shippingTo: toAddressPayload(values.shippingTo),
+      items: values.items.map((item: any) => ({
+        weight: item.weight,
+        description: item.description,
+      })),
     };
     mutate(data);
     // setActiveState((prev) => prev + 1);
@@ -182,8 +196,8 @@ export default function Details() {
           Previous
         </BaseButton>
         <BaseButton
-          isLoading={isLoading}
-          isDisabled={isLoading}
+          isLoading={isLoading || checking}
+          isDisabled={isLoading || checking}
           type="submit"
           extraClass="!p-6"
         >

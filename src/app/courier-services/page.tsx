@@ -11,7 +11,7 @@ import GuideToBook from "@/components/page-components/guide-to-book";
 // import BaseBreadCrumb from "@/components/common/base-breadcrumb";
 // import Link from "next/link";
 import { PagesContent } from "@/utils/types";
-import { client } from "@/utils/constants";
+import { fetchLocalized } from "@/utils/constants";
 import Title from "@/components/page-components/title";
 import TabPageComponent from "@/components/page-components/tab";
 import Content from "@/components/page-components/content";
@@ -34,7 +34,7 @@ import BrokerPartnerForm from "@/components/forms/broker-partner-form";
 import CorporatePartnerForm from "@/components/forms/corporate-partner-form";
 
 export default async function CourierServices() {
-  const homeData: { content: [PagesContent] } = await client.fetch({
+  const homeData: { content: [PagesContent] } = await fetchLocalized({
     query: `*[_type=='courier'][0]{
                                                           "content":[...contentBlocks[]->{
 
